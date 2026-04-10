@@ -112,15 +112,15 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/linkTxt"
+                android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Are you a new user? Register"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="3B688C"
                 android:textAlignment="center"
-                android:layout_marginTop="8dp"/>
+                android:textColor="#3b688c"
+                android:layout_marginTop="12dp"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
