@@ -54,7 +54,8 @@
                 android:inputType="textEmailAddress"
                 android:padding="8dp"
                 android:text="Email"
-                android:textColor="#3b688c" />
+                android:textColor="#3b688c"
+                android:hint="Enter Your Email"/>
 
             <EditText
                 android:id="@+id/passwordTxt"
@@ -67,7 +68,7 @@
                 android:drawableStart="@drawable/email"
                 android:drawablePadding="16dp"
                 android:ems="10"
-                android:hint="Password"
+                android:hint="Enter Your Password"
                 android:inputType="textPassword"
                 android:padding="8dp"
                 android:text="Password"
@@ -85,25 +86,24 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="104dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/googleBtn"
                     style="@android:style/Widget.Button"
-                    layout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="50dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/btn_background"
                     android:drawableEnd="@drawable/google"
                     android:drawablePadding="16dp"
+                    android:maxWidth="320dp"
+                    android:minWidth="240dp"
                     android:padding="16dp"
                     android:text="Google"
                     android:textColor="#3b688c"
@@ -115,10 +115,10 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:text="Are you a new user? Register"
                 android:textAlignment="center"
                 android:textColor="#3b688c"
-                android:layout_marginTop="12dp"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
