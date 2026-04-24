@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingTop="40dp"
+                android:paddingTop="60dp"
                 android:paddingBottom="30dp"
                 android:text="WELCOME TO \nLOGIN"
                 android:textAlignment="center"
@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/edittext_background"
                 android:drawableStart="@drawable/email"
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/edittext_background"
                 android:drawableStart="@drawable/email"
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 app:srcCompat="@drawable/btn_arrow2" />
 
@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="104dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -100,7 +100,7 @@
                     android:minWidth="240dp"
                     android:padding="16dp"
                     android:text="Google"
-                    android:textColor="#3b688c"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -109,10 +109,10 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="14dp"
                 android:text="Are you a new user? Register"
                 android:textAlignment="center"
-                android:textColor="#3b688c"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
