@@ -25,11 +25,11 @@
                 android:id="@+id/loginLbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:paddingTop="40dp"
                 android:paddingBottom="30dp"
                 android:text="WELCOME TO \nLOGIN"
                 android:textAlignment="center"
-                android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="48sp"
                 android:textStyle="bold" />
