@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple"
+    android:background="#FBEEEC"
     tools:context=".MainActivity">
 
     <ScrollView
@@ -34,9 +34,9 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="40dp"
                 android:paddingBottom="30dp"
-                android:text="WELCOME TO \nLOGIN"
+                android:text="Create \nAccount"
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="#8C15E0"
                 android:textSize="48sp"
                 android:textStyle="bold" />
 
@@ -51,11 +51,11 @@
                 android:drawableStart="@drawable/email"
                 android:drawablePadding="16dp"
                 android:ems="10"
-                android:hint="Enter Your Email"
                 android:inputType="textEmailAddress"
                 android:padding="8dp"
                 android:text="Email"
-                android:textColor="@color/white" />
+                android:textColor="#3b688c"
+                android:hint="Enter Your Email"/>
 
             <EditText
                 android:id="@+id/passwordTxt"
