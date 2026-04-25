@@ -37,21 +37,37 @@
 
             <RadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="63dp">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp">
 
                 <RadioButton
-                    android:id="@+id/radioButton"
-                    android:layout_width="match_parent"
+                    android:id="@+id/donorBtn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/luckiest_guy"
-                    android:text="RadioButton" />
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:text="Donor" />
 
                 <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="match_parent"
+                    android:id="@+id/recipientBtn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/luckiest_guy"
-                    android:text="RadioButton" />
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:text="Recipient" />
             </RadioGroup>
 
             <EditText
