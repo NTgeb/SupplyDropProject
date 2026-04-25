@@ -29,7 +29,7 @@
                 android:gravity="center"
                 android:paddingTop="60dp"
                 android:paddingBottom="30dp"
-                android:text="WELCOME TO \nLOGIN"
+                android:text="LOGIN"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="48sp"
@@ -82,8 +82,8 @@
                 android:background="@color/yellow"
                 android:fontFamily="@font/luckiest_guy"
                 android:text="ENTER"
-                android:textColor="@color/black"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/black"
                 app:srcCompat="@drawable/btn_arrow2" />
 
             <LinearLayout
