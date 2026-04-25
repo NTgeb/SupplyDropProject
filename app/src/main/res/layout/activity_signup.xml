@@ -25,6 +25,7 @@
                 android:id="@+id/loginLbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/luckiest_guy"
                 android:gravity="center"
                 android:paddingTop="50dp"
                 android:paddingBottom="30dp"
@@ -34,23 +35,9 @@
                 android:textSize="48sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/roleLbl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="Select Role"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
             <RadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="63dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
@@ -64,6 +51,9 @@
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="32dp"
                     android:layout_weight="1"
+                    android:fontFamily="@font/luckiest_guy"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
                     android:text="Donor" />
 
                 <RadioButton
@@ -74,6 +64,9 @@
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="32dp"
                     android:layout_weight="1"
+                    android:fontFamily="@font/luckiest_guy"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
                     android:text="Recipient" />
             </RadioGroup>
 
@@ -88,6 +81,7 @@
                 android:drawableStart="@drawable/name"
                 android:drawablePadding="24dp"
                 android:ems="10"
+                android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter Your Fullname"
                 android:inputType="textPersonName"
                 android:padding="8dp"
@@ -105,6 +99,7 @@
                 android:drawableStart="@drawable/name"
                 android:drawablePadding="24dp"
                 android:ems="10"
+                android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter A Username"
                 android:inputType="text"
                 android:padding="8dp"
@@ -122,6 +117,7 @@
                 android:drawableStart="@drawable/ic_3"
                 android:drawablePadding="12dp"
                 android:ems="10"
+                android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter Your Cellphone Number"
                 android:inputType="phone"
                 android:padding="8dp"
@@ -139,6 +135,7 @@
                 android:drawableStart="@drawable/ic_2"
                 android:drawablePadding="12dp"
                 android:ems="10"
+                android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter Your Address"
                 android:inputType="textEmailAddress"
                 android:padding="8dp"
@@ -155,20 +152,26 @@
                 android:background="@drawable/edittext_background"
                 android:drawablePadding="16dp"
                 android:ems="10"
+                android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter Your ID number"
                 android:inputType="text|number"
                 android:padding="8dp"
                 android:text="ID Number"
                 android:textColor="@color/white" />
 
-            <ImageView
+            <Button
                 android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
+                android:layout_width="146dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
-                app:srcCompat="@drawable/btn_arrow2" />
+                android:background="#F3CF1A"
+                android:fontFamily="@font/luckiest_guy"
+                android:text='ENTER'
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/black"
+                app:srcCompat="@color/yellow" />
 
         </LinearLayout>
     </ScrollView>
