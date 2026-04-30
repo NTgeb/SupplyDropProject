@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- TOP SECTION: Title + Image -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvRecipientTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/luckiest_guy"
+                android:text="Recipient Name"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgRecipient"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="#CCCCCC"
+                android:contentDescription="Recipient Image"
+                android:scaleType="centerCrop" />
+
+        </LinearLayout>
+
+        <!-- MIDDLE SECTION: Description + Profile/Amount/Donate -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <!-- Description Box -->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/luckiest_guy"
+                android:padding="10dp"
+                android:text="Description of what the recipient needs..."
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <!-- Right Column: Profile, Amount, Donate -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <!-- Profile Button -->
+
+                <!-- Amount Controls -->
+                <Button
+                    android:id="@+id/btnProfile"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:backgroundTint="@color/yellow"
+                    android:fontFamily="@font/luckiest_guy"
+                    android:text="Profile"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="@font/luckiest_guy"
+                    android:text="Amount"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnDecrease"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:backgroundTint="@color/lblue"
+                        android:padding="0dp"
+                        android:text="-"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tvAmount"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnIncrease"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:backgroundTint="@color/lblue"
+                        android:padding="0dp"
+                        android:text="+"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <!-- Donate Button -->
+                <Button
+                    android:id="@+id/btnDonate"
+                    android:layout_width="120dp"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@color/yellow"
+                    android:fontFamily="@font/luckiest_guy"
+                    android:text="Donate"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CATEGORY -->
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background=""
+            android:fontFamily="@font/luckiest_guy"
+            android:padding="6dp"
+            android:text="Category: Food"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+
+        <!-- SIMILAR OPPORTUNITIES -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="Similar Opportunities"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/lvSimilarOpportunities"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#FFFFFF"
+            android:divider="#EEEEEE"
+            android:dividerHeight="1dp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SupplyDrop">
         <activity
+            android:name=".SingleRecipientActivity"
+            android:exported="false" />
+        <activity
             android:name=".SelectItemsActivity"
             android:exported="false" />
         <activity
