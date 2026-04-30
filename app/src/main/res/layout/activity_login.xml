@@ -69,11 +69,11 @@
                 android:inputType="textPassword"
                 android:padding="8dp"
                 android:text="Password"
-                android:textColor="#3b688c"
-                android:textColorHint="756C6C" />
+                android:textColor="@color/white"
+                android:textColorHint="#756C6C" />
 
             <Button
-                android:id="@+id/imageView3"
+                android:id="@+id/enterBtn"
                 android:layout_width="179dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -83,8 +83,7 @@
                 android:fontFamily="@font/luckiest_guy"
                 android:text="ENTER"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/black"
-                app:srcCompat="@drawable/btn_arrow2" />
+                android:textColor="@color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -121,7 +120,7 @@
                 android:fontFamily="@font/luckiest_guy"
                 android:text="Are you a new user? Register"
                 android:textAlignment="center"
-                android:textColor="@color/lblue"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

@@ -47,27 +47,30 @@
                     android:id="@+id/donorBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="32dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/luckiest_guy"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    android:text="Donor" />
+                    android:text="Donor"
+                    android:textSize="22sp" />
 
                 <RadioButton
                     android:id="@+id/recipientBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="32dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/luckiest_guy"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    android:text="Recipient" />
+                    android:text="Recipient"
+                    android:textSize="22sp" />
+
             </RadioGroup>
 
             <EditText
@@ -166,7 +169,7 @@
                 android:layout_gravity="end"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
-                android:background="#F3CF1A"
+                android:background="@color/yellow"
                 android:fontFamily="@font/luckiest_guy"
                 android:text='ENTER'
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
