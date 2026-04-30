@@ -40,36 +40,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp">
 
                 <RadioButton
                     android:id="@+id/donorBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="24dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/luckiest_guy"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
                     android:text="Donor"
-                    android:textSize="22sp" />
+                    android:textSize="18sp"
+                    android:padding="8dp"/>
 
                 <RadioButton
                     android:id="@+id/recipientBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="24dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/luckiest_guy"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
                     android:text="Recipient"
-                    android:textSize="22sp" />
+                    android:textSize="18sp"
+                    android:padding="8dp"/>
 
             </RadioGroup>
 
