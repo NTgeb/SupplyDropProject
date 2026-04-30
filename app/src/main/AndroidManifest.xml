@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SupplyDrop">
         <activity
-            android:name=".SelectItemsActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

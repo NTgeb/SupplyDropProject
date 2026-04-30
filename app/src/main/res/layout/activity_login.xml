@@ -49,8 +49,8 @@
                 android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter Your Email"
                 android:inputType="textEmailAddress"
+                android:drawableTint="@color/white"
                 android:padding="8dp"
-                android:text="Email"
                 android:textColor="@color/white" />
 
             <EditText
@@ -61,16 +61,16 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/edittext_background"
-                android:drawableStart="@drawable/email"
+                android:drawableStart="@drawable/password"
                 android:drawablePadding="16dp"
                 android:ems="10"
                 android:fontFamily="@font/luckiest_guy"
                 android:hint="Enter Your Password"
                 android:inputType="textPassword"
+                android:drawableTint="@color/white"
                 android:padding="8dp"
-                android:text="Password"
                 android:textColor="@color/white"
-                android:textColorHint="#756C6C" />
+                android:drawableEnd="@drawable/baseline_visibility_24"/>
 
             <Button
                 android:id="@+id/enterBtn"
@@ -80,6 +80,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 android:background="@color/yellow"
+                app:backgroundTint="@null"
                 android:fontFamily="@font/luckiest_guy"
                 android:text="ENTER"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -102,18 +103,20 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/btn_background"
                     android:drawableEnd="@drawable/google"
+                    android:drawableTint="@color/white"
                     android:drawablePadding="16dp"
                     android:maxWidth="320dp"
                     android:minWidth="240dp"
                     android:padding="16dp"
                     android:text="Google"
+                    app:backgroundTint="@null"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/registerTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
