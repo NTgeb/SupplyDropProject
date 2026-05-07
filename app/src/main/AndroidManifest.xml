@@ -15,6 +15,9 @@
             android:name=".SingleRecipientActivity"
             android:exported="false" />
         <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".SelectItemsActivity"
             android:exported="false" />
         <activity
