@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SupplyDrop">
 
         <activity
+            android:name=".RecipientDashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".SingleRecipientActivity"
             android:exported="false" />
         <activity
