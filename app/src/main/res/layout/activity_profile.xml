@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/login_background">
+
+    <!-- TITLE BAR AT THE VERY TOP -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/luckiest_guy"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Profile \n Page"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:justifyContent="space_between">
+
+        <!-- TOP SECTION: Logo/Image + Description side by side -->
+
+        <!-- DIVIDER LINE -->
+
+        <LinearLayout
+            android:layout_width="379dp"
+            android:layout_height="202dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <!-- LEFT SIDE: Logo + Location -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <!-- Logo/Profile Image -->
+                <ImageView
+                    android:id="@+id/imgProfileLogo"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#CCCCCC"
+                    android:contentDescription="Profile Logo"
+                    android:scaleType="centerCrop" />
+
+
+            </LinearLayout>
+
+            <!-- RIGHT SIDE: Description Box -->
+            <TextView
+                android:id="@+id/tvProfileDescription"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/luckiest_guy"
+                android:padding="10dp"
+                android:text="Description about the recipient..."
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- CONNECT BUTTON (Contact/Phone) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="CONTACT"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <!-- WEBSITE -->
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/yellow"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="  Contact Details"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="WEBSITE (OPTIONAL)"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvWebsite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:padding="12dp"
+            android:text="www.example.org"
+            android:textColor="@color/lblue"
+            android:textSize="14sp" />
+
+        <!-- ADDRESS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="ADDRESS"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <!-- VIEW OTHER DONATIONS BUTTON -->
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:padding="12dp"
+            android:text="123 Example Street, City, 1234"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnViewOtherDonations"
+            android:layout_width="391dp"
+            android:layout_height="81dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/yellow"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="+ View Other Donations"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>
+</LinearLayout>
