@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SupplyDrop">
         <activity
+            android:name=".DonationHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DonorAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RecipientAccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddOrEditDonationActivity"
             android:exported="false" />
         <activity

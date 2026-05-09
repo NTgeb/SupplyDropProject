@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background">
+
+    <!-- SUPPLY DROP Title -->
+    <TextView
+        android:id="@+id/appTitleLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/luckiest_guy"
+        android:text="SUPPLY DROP"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:paddingTop="20dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/subTitleLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/luckiest_guy"
+        android:text="EDIT PROFILE"
+        android:textColor="@color/yellow"
+        android:textSize="18sp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/appTitleLbl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Divider -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#44ffffff"
+        app:layout_constraintTop_toBottomOf="@id/subTitleLbl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Scrollable form -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Recipient Name -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RECIPIENT / ORGANISATION NAME"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/recipientNameEt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:hint="e.g. Hope Foundation"
+                android:inputType="text"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff"
+                android:fontFamily="@font/luckiest_guy"/>
+
+            <!-- Profile Image -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PROFILE IMAGE"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"/>
+
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="#44ffffff"
+                android:scaleType="centerCrop"
+                android:src="@drawable/account_circle"/>
+
+            <Button
+                android:id="@+id/changeImageBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:text="Choose Image"
+                android:fontFamily="@font/luckiest_guy"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:background="@color/yellow"
+                app:backgroundTint="@null"/>
+
+            <!-- Description -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DESCRIPTION"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/descriptionEt"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="8dp"
+                android:hint="Describe your organisation and what you do..."
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff"
+                android:fontFamily="@font/luckiest_guy"/>
+
+            <!-- Phone -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PHONE NUMBER"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/phoneEt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:hint="+27 00 000 0000"
+                android:inputType="phone"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff"
+                android:fontFamily="@font/luckiest_guy"/>
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EMAIL"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/emailEt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:hint="example@email.com"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff"
+                android:fontFamily="@font/luckiest_guy"/>
+
+            <!-- Website -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WEBSITE (OPTIONAL)"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/websiteEt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:hint="www.example.org"
+                android:inputType="textWebEmailAddress"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff"
+                android:fontFamily="@font/luckiest_guy"/>
+
+            <!-- Address -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ADDRESS"
+                android:textColor="@color/white"
+                android:fontFamily="@font/luckiest_guy"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/addressEt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:hint="123 Example Street, City, 1234"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff"
+                android:fontFamily="@font/luckiest_guy"/>
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/saveProfileBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="SAVE PROFILE"
+                android:fontFamily="@font/luckiest_guy"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:background="@color/yellow"
+                app:backgroundTint="@null"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
