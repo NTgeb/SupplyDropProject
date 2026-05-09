@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(intent);
-
         //Switching the password visibility
         EditText passwordTxt = findViewById(R.id.passwordTxt);
         final boolean[] isPasswordVisible = {false};
