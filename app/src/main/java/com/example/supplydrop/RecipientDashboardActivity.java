@@ -57,10 +57,9 @@ public class RecipientDashboardActivity extends AppCompatActivity {
 
         // Add → go straight to AddOrEditDonationActivity
         addBtn.setOnClickListener(v -> {
-            // Intent intent = new Intent(this, AddOrEditDonationActivity.class);
-            // intent.putExtra("mode", "add");
-            // startActivity(intent);
-            Toast.makeText(this, "Add - coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AddOrEditDonationActivity.class);
+            intent.putExtra("mode", "add");
+            startActivity(intent);
         });
 
         // Edit → only if a row is selected
@@ -69,11 +68,11 @@ public class RecipientDashboardActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please select an item to edit", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Intent intent = new Intent(this, AddOrEditDonationActivity.class);
-            // intent.putExtra("mode", "edit");
-            // intent.putExtra("itemName", adapter.getSelectedItem()[0]);
-            // startActivity(intent);
-            Toast.makeText(this, "Edit: " + adapter.getSelectedItem()[0], Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AddOrEditDonationActivity.class);
+            intent.putExtra("mode", "edit");
+            intent.putExtra("itemName", adapter.getSelectedItem()[0]);
+            intent.putExtra("quantity", adapter.getSelectedItem()[2]);
+            startActivity(intent);
         });
 
         // Remove → only if a row is selected
