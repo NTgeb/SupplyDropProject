@@ -73,7 +73,7 @@
                 android:drawableEnd="@drawable/baseline_visibility_24"/>
 
             <Button
-                android:id="@+id/enterBtn"
+                android:id="@+id/btnEnter"
                 android:layout_width="179dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

@@ -5,16 +5,34 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
+    OkHttpClient client;
+    EditText emailtxt;
+    EditText passwordtxt;
+    String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/login.php";
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,5 +89,54 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //Checking the login through the database
+
+        client = new OkHttpClient();
+        Button btnEnter = findViewById(R.id.btnEnter);
+        textView = findViewById(R.id.loginLbl);
+
+        btnEnter.setOnClickListener(new View.OnClickListener() {//Calls the Post method once the user clicks on button
+            @Override
+            public void onClick(View v) {
+                post();
+            }
+        });
     }
+
+        public void post(){
+            emailtxt = findViewById(R.id.emailTxt);
+            passwordtxt = findViewById(R.id.passwordTxt);
+
+            String email = emailtxt.getText().toString();
+            String password = passwordtxt.getText().toString();
+
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("email",email)
+                    .add("password",password)
+                    .build();
+            Request request = new Request.Builder()
+                    .url(postUrl)
+                    .post(requestBody)
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    textView.setText("Failed");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {//Check if password is correct etc
+                    final String responseBody = response.body().string();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.setText(responseBody);
+                        }
+                    });
+
+                }
+            });
+        }
 }

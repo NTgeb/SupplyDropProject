@@ -148,7 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:background=""
+            android:background="@android:color/transparent"
             android:fontFamily="@font/luckiest_guy"
             android:padding="6dp"
             android:text="Category: Food"
