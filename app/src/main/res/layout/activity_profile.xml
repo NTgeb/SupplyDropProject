@@ -38,8 +38,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        android:gravity="center_vertical"
-        android:justifyContent="space_between">
+        android:gravity="center_vertical">
 
         <!-- TOP SECTION: Logo/Image + Description side by side -->
 

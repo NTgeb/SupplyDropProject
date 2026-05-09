@@ -2,53 +2,51 @@ package com.example.supplydrop;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.PopupMenu;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class DonorDashboardFragment extends Fragment {
 
     Spinner categorySpinner, areaSpinner;
     Button clearBtn;
-    ImageButton profileIcon;
     ListView recipientListView;
-
-    // Dummy recipient data - replace with DB later
     List<String[]> allRecipients = new ArrayList<>();
     List<String[]> filteredRecipients = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        categorySpinner = findViewById(R.id.categorySpinner);
-        areaSpinner = findViewById(R.id.areaSpinner);
-        clearBtn = findViewById(R.id.clearBtn);
-        profileIcon = findViewById(R.id.profileIcon);
-        recipientListView = findViewById(R.id.recipientListView);
+        categorySpinner = view.findViewById(R.id.categorySpinner);
+        areaSpinner = view.findViewById(R.id.areaSpinner);
+        clearBtn = view.findViewById(R.id.clearBtn);
+        recipientListView = view.findViewById(R.id.recipientListView);
+
+        // Remove profile icon click since account is now in bottom nav
+        ImageButton profileIcon = view.findViewById(R.id.profileIcon);
+        profileIcon.setVisibility(View.GONE);
 
         setupDummyData();
         setupSpinners();
         setupRecipientList();
-        setupProfileMenu();
         setupClearButton();
+
+        return view;
     }
 
     private void setupDummyData() {
-        // Each entry: { name, items, area, category }
         allRecipients.add(new String[]{"Hope Foundation", "Clothing, Food", "Johannesburg", "Clothing"});
         allRecipients.add(new String[]{"Ubuntu Centre", "Toiletries", "Cape Town", "Toiletries"});
         allRecipients.add(new String[]{"Helping Hands", "Food, Toiletries", "Durban", "Food"});
@@ -57,21 +55,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        // Category spinner
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item,
                 new String[]{"All Categories", "Clothing", "Food", "Toiletries"});
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(categoryAdapter);
 
-        // Area spinner
-        ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item,
                 new String[]{"All Areas", "Johannesburg", "Cape Town", "Durban"});
         areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         areaSpinner.setAdapter(areaAdapter);
 
-        // Apply filter when either spinner changes
         AdapterView.OnItemSelectedListener filterListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -102,13 +97,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupRecipientList() {
         updateListView();
-
-        // Click on a recipient row → go to their page
         recipientListView.setOnItemClickListener((parent, view, position, id) -> {
             String[] recipient = filteredRecipients.get(position);
-            // TODO: pass recipient name to their profile screen
-            Toast.makeText(this, "Opening: " + recipient[0], Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(this, RecipientProfileActivity.class);
+            Toast.makeText(requireContext(), "Opening: " + recipient[0], Toast.LENGTH_SHORT).show();
+            // Intent intent = new Intent(requireContext(), SingleRecipientActivity.class);
             // intent.putExtra("recipientName", recipient[0]);
             // startActivity(intent);
         });
@@ -116,38 +108,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private void updateListView() {
         if (recipientListView.getAdapter() == null) {
-            RecipientAdapter recipientAdapter = new RecipientAdapter(this, filteredRecipients);
-            recipientListView.setAdapter(recipientAdapter);
+            RecipientAdapter adapter = new RecipientAdapter(requireContext(), filteredRecipients);
+            recipientListView.setAdapter(adapter);
         } else {
             ((RecipientAdapter) recipientListView.getAdapter()).updateData(filteredRecipients);
         }
-    }
-
-    private void setupProfileMenu() {
-        profileIcon.setOnClickListener(v -> {
-            PopupMenu popup = new PopupMenu(this, profileIcon);
-            popup.getMenu().add("Account Info");
-            popup.getMenu().add("Donation History");
-            popup.getMenu().add("Logout");
-
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getTitle().toString()) {
-                    case "Account Info":
-                        Toast.makeText(this, "Account Info - coming soon", Toast.LENGTH_SHORT).show();
-                        return true;
-                    case "Donation History":
-                        Toast.makeText(this, "Donation History - coming soon", Toast.LENGTH_SHORT).show();
-                        return true;
-                    case "Logout":
-                        Intent intent = new Intent(this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            });
-            popup.show();
-        });
     }
 
     private void setupClearButton() {

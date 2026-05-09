@@ -12,16 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SupplyDrop">
         <activity
+            android:name=".RecipientActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DonorActivity"
+            android:exported="false" />
+        <activity
             android:name=".DonationHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".DonorAccountActivity"
-            android:exported="false" />
-        <activity
             android:name=".EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RecipientAccountActivity"
             android:exported="false" />
         <activity
             android:name=".AddOrEditDonationActivity"
@@ -30,13 +30,7 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".RecipientDashboardActivity"
-            android:exported="false" />
-        <activity
             android:name=".SingleRecipientActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
             android:exported="false" />
         <activity
             android:name=".SelectItemsActivity"
