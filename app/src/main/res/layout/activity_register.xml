@@ -36,6 +36,7 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/rgbDonorRecip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -82,6 +83,23 @@
                 android:inputType="textPersonName"
                 android:padding="8dp"
                 android:textColor="@color/white" />
+            <EditText
+                android:id="@+id/txtemail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/edittext_background"
+                android:drawableStart="@drawable/name"
+                android:drawablePadding="24dp"
+                android:drawableTint="@color/white"
+                android:ems="10"
+                android:fontFamily="@font/luckiest_guy"
+                android:hint="Enter Your email"
+                android:inputType="textEmailAddress"
+                android:padding="8dp"
+                android:textColor="@color/white" />
 
             <EditText
                 android:id="@+id/usernameTxt"
@@ -120,7 +138,7 @@
                 android:textColor="@color/white" />
 
             <EditText
-                android:id="@+id/Address"
+                android:id="@+id/txtAdress"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
@@ -156,7 +174,7 @@
                 android:textColor="@color/white" />
 
             <EditText
-                android:id="@+id/IdentificationNo"
+                android:id="@+id/passwordRegTxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
@@ -166,13 +184,13 @@
                 android:drawablePadding="16dp"
                 android:ems="10"
                 android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter Your ID number"
-                android:inputType="text|number"
+                android:hint="Enter a Password"
+                android:inputType="text|textVisiblePassword"
                 android:padding="8dp"
                 android:textColor="@color/white" />
 
             <Button
-                android:id="@+id/imageView3"
+                android:id="@+id/btnRegEnter"
                 android:layout_width="146dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
