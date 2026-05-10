@@ -17,6 +17,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     EditText emailtxt;
     EditText passwordtxt;
     String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/login.php";
-    TextView textView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,24 +91,29 @@ public class MainActivity extends AppCompatActivity {
 
         //Checking the login through the database
 
+        emailtxt = findViewById(R.id.emailTxt);
+        passwordtxt = findViewById(R.id.passwordTxt);
         client = new OkHttpClient();
         Button btnEnter = findViewById(R.id.btnEnter);
-        textView = findViewById(R.id.loginLbl);
 
-        btnEnter.setOnClickListener(new View.OnClickListener() {//Calls the Post method once the user clicks on button
+        btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                post();
+                String email = emailtxt.getText().toString().trim();
+                String password = passwordtxt.getText().toString().trim();
+
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(MainActivity.this,
+                            "Please enter email and password",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                post(email, password);
             }
         });
     }
 
-        public void post(){
-            emailtxt = findViewById(R.id.emailTxt);
-            passwordtxt = findViewById(R.id.passwordTxt);
-
-            String email = emailtxt.getText().toString();
-            String password = passwordtxt.getText().toString();
+    public void post(String email, String password){
 
             RequestBody requestBody = new FormBody.Builder()
                     .add("email",email)
@@ -119,7 +126,14 @@ public class MainActivity extends AppCompatActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    textView.setText("Failed");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this,
+                                    "Connection failed. Check your internet.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
                 @Override
@@ -129,7 +143,49 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textView.setText(responseBody);
+
+                            try {
+                                // Turn the response text into a JSON object we can read
+                                JSONObject obj = new JSONObject(responseBody);
+
+                                if (obj.getBoolean("success")) {
+                                    // Login worked — get the user's info
+                                    String userType  = obj.getString("user_type");
+                                    String userEmail = obj.getString("email");
+
+                                    // Show welcome message
+                                    Toast.makeText(MainActivity.this,
+                                            "Welcome!", Toast.LENGTH_SHORT).show();
+                                    if (userType.equals("Donor")) {
+                                        // Donor goes to DonorActivity
+                                        Intent intent = new Intent(MainActivity.this, DonorActivity.class);
+                                        intent.putExtra("email", userEmail);
+                                        intent.putExtra("user_type", userType);
+                                        startActivity(intent);
+                                    } else {
+                                        // Recipient goes to RecipientActivity
+                                        Intent intent = new Intent(MainActivity.this, RecipientActivity.class);
+                                        intent.putExtra("email", userEmail);
+                                        intent.putExtra("user_type", userType);
+                                        startActivity(intent);
+                                    }
+
+                                    // Close the login screen
+                                    finish();
+
+                                } else {
+                                    // Login failed — show the error message that came from PHP
+                                    Toast.makeText(MainActivity.this,
+                                            obj.getString("message"),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (Exception e) {
+                                // Something went wrong reading the response
+                                Toast.makeText(MainActivity.this,
+                                        "Error: " + responseBody,
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
 
