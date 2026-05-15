@@ -1,22 +1,43 @@
 package com.example.supplydrop;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DonationHistoryActivity extends AppCompatActivity {
 
     ListView donationHistoryListView;
     DonationHistoryAdapter adapter;
 
-    // Dummy data - replace with DB later
-    // Each entry: { organisationName, item, amountDonated }
     List<String[]> allDonations = new ArrayList<>();
+
+    OkHttpClient client = new OkHttpClient();
+    String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
+
+    // Store request_id and recipient_id for row click navigation
+    List<String[]> donationMeta = new ArrayList<>();
+
+    int donorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,25 +46,94 @@ public class DonationHistoryActivity extends AppCompatActivity {
 
         donationHistoryListView = findViewById(R.id.donationHistoryListView);
 
-        setupDummyData();
-        setupList();
+        // Get donor_id from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences(
+                "SupplyDropPrefs", MODE_PRIVATE);
+        donorId = prefs.getInt("donor_id", -1);
+
+        fetchDonationHistory();
     }
 
-    private void setupDummyData() {
-        allDonations.add(new String[]{"Hope Foundation", "T-Shirts", "10"});
-        allDonations.add(new String[]{"Ubuntu Centre", "Soap", "5"});
-        allDonations.add(new String[]{"Helping Hands", "Rice", "20"});
+    private void fetchDonationHistory() {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("donor_id", String.valueOf(donorId))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(baseUrl + "get_donor_history.php")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(DonationHistoryActivity.this,
+                                "Failed to load history",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response) throws IOException {
+                final String body = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(body);
+                        if (obj.getBoolean("success")) {
+                            JSONArray donations = obj.getJSONArray("donations");
+                            allDonations.clear();
+                            donationMeta.clear();
+
+                            for (int i = 0; i < donations.length(); i++) {
+                                JSONObject d = donations.getJSONObject(i);
+                                String orgName    = d.getString("full_name");
+                                String itemName   = d.getString("item_name");
+                                String qty        = d.getString("quantity_donated");
+                                String requestId  = d.getString("request_id");
+                                String recipientId = d.getString("recipient_id");
+
+                                // For display in table
+                                allDonations.add(new String[]{
+                                        orgName, itemName, qty
+                                });
+
+                                // For navigation on row click
+                                donationMeta.add(new String[]{
+                                        requestId, recipientId, orgName
+                                });
+                            }
+
+                            setupList();
+
+                        } else {
+                            Toast.makeText(DonationHistoryActivity.this,
+                                    "No donation history found",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(DonationHistoryActivity.this,
+                                "Error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     private void setupList() {
         adapter = new DonationHistoryAdapter(this, allDonations);
         donationHistoryListView.setAdapter(adapter);
 
-        // Click row → go to that recipient/organisation's profile page
-        donationHistoryListView.setOnItemClickListener((parent, view, position, id) -> {
-            String[] donation = allDonations.get(position);
+        // Click row → go to that specific donation request
+        donationHistoryListView.setOnItemClickListener((parent, view,
+                                                        position, id) -> {
+            String[] meta = donationMeta.get(position);
             Intent intent = new Intent(this, SingleRecipientActivity.class);
-            intent.putExtra("recipientName", donation[0]);
+            intent.putExtra("request_id", meta[0]);
+            intent.putExtra("recipient_id", meta[1]);
+            intent.putExtra("recipient_name", meta[2]);
             startActivity(intent);
         });
     }
