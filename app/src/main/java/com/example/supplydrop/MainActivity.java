@@ -29,6 +29,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import android.content.SharedPreferences;
+
 public class MainActivity extends AppCompatActivity {
     OkHttpClient client;
     EditText emailtxt;
@@ -149,31 +151,14 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject obj = new JSONObject(responseBody);
 
                                 if (obj.getBoolean("success")) {
-                                    // Login worked — get the user's info
                                     String userType  = obj.getString("user_type");
                                     String userEmail = obj.getString("email");
+                                    // Fetch full profile and store in SharedPreferences before navigating
+                                    fetchUserProfile(userEmail, userType);
+                                }
 
-                                    // Show welcome message
-                                    Toast.makeText(MainActivity.this,
-                                            "Welcome!", Toast.LENGTH_SHORT).show();
-                                    if (userType.equals("Donor")) {
-                                        // Donor goes to DonorActivity
-                                        Intent intent = new Intent(MainActivity.this, DonorActivity.class);
-                                        intent.putExtra("email", userEmail);
-                                        intent.putExtra("user_type", userType);
-                                        startActivity(intent);
-                                    } else {
-                                        // Recipient goes to RecipientActivity
-                                        Intent intent = new Intent(MainActivity.this, RecipientActivity.class);
-                                        intent.putExtra("email", userEmail);
-                                        intent.putExtra("user_type", userType);
-                                        startActivity(intent);
-                                    }
-
-                                    // Close the login screen
-                                    finish();
-
-                                } else {
+                                else
+                                {
                                     // Login failed — show the error message that came from PHP
                                     Toast.makeText(MainActivity.this,
                                             obj.getString("message"),
@@ -192,4 +177,88 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+    private void fetchUserProfile(String email, String userType) {
+        String profileUrl;
+        if (userType.equals("Donor")) {
+            profileUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/get_donor.php";
+        } else {
+            profileUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/get_recipient.php";
+        }
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add("email", email)
+                .build();
+        Request request = new Request.Builder()
+                .url(profileUrl)
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this,
+                                "Failed to load profile",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response) throws IOException {
+                final String responseBody = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(responseBody);
+                        if (obj.getBoolean("success")) {
+
+                            // Save to SharedPreferences
+                            SharedPreferences prefs = getSharedPreferences(
+                                    "SupplyDropPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("email", email);
+                            editor.putString("user_type", userType);
+
+                            if (userType.equals("Donor")) {
+                                editor.putInt("donor_id",
+                                        obj.getInt("donor_id"));
+                                editor.putString("full_name",
+                                        obj.getString("full_name"));
+                            } else {
+                                editor.putInt("recipient_id",
+                                        obj.getInt("recipient_id"));
+                                editor.putString("full_name",
+                                        obj.getString("full_name"));
+                            }
+                            editor.apply();
+
+                            Toast.makeText(MainActivity.this,
+                                    "Welcome!", Toast.LENGTH_SHORT).show();
+
+                            Intent intent;
+                            if (userType.equals("Donor")) {
+                                intent = new Intent(MainActivity.this,
+                                        DonorActivity.class);
+                            } else {
+                                intent = new Intent(MainActivity.this,
+                                        RecipientActivity.class);
+                            }
+                            startActivity(intent);
+                            finish();
+
+                        } else {
+                            Toast.makeText(MainActivity.this,
+                                    "Error: " + obj.getString("message"),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this,
+                                "Error: " + responseBody,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+    }
 }
