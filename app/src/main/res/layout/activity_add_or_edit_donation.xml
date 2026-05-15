@@ -198,8 +198,8 @@
                     android:text="-"
                     android:textSize="18sp"
                     android:fontFamily="@font/luckiest_guy"
-                    android:textColor="@color/black"
-                    android:background="@color/yellow"
+                    android:textColor="@color/white"
+                    android:background="@color/lblue"
                     android:minHeight="0dp"
                     android:minWidth="0dp"
                     app:backgroundTint="@null"/>
@@ -222,8 +222,8 @@
                     android:text="+"
                     android:textSize="18sp"
                     android:fontFamily="@font/luckiest_guy"
-                    android:textColor="@color/black"
-                    android:background="@color/yellow"
+                    android:textColor="@color/white"
+                    android:background="@color/lblue"
                     android:minHeight="0dp"
                     android:minWidth="0dp"
                     app:backgroundTint="@null"/>

@@ -30,7 +30,7 @@ import okhttp3.Response;
 
 public class RecipientDashboardFragment extends Fragment {
 
-    Button addBtn, editBtn, removeBtn;
+    Button addBtn, editBtn ,removeBtn;
     ListView donationRequestsListView;
     List<String[]> allRequests = new ArrayList<>();
     DonationRequestAdapter adapter;
@@ -46,7 +46,7 @@ public class RecipientDashboardFragment extends Fragment {
                 container, false);
 
         addBtn = view.findViewById(R.id.addBtn);
-        editBtn = view.findViewById(R.id.editBtn);
+        editBtn   = view.findViewById(R.id.editBtn);
         removeBtn = view.findViewById(R.id.removeBtn);
         donationRequestsListView = view.findViewById(R.id.donationRequestsListView);
 
@@ -101,14 +101,15 @@ public class RecipientDashboardFragment extends Fragment {
                                 String catName = d.getString("cat_name");
                                 String quantity = d.getString("quantity");
                                 String requestId = d.getString("request_id");
-                                String description = d.optString(
-                                        "description", "");
+                                String description = d.optString("description", "");
+                                String catId = d.getString("cat_id");
 
                                 // { itemName, catName, quantity,
-                                //   requestId, description }
+                                //   requestId, description, catId }
                                 allRequests.add(new String[]{
                                         itemName, catName,
-                                        quantity, requestId, description
+                                        quantity, requestId,
+                                        description, catId
                                 });
                             }
                             adapter.updateData(allRequests);
@@ -143,6 +144,7 @@ public class RecipientDashboardFragment extends Fragment {
             Intent intent = new Intent(requireContext(),
                     AddOrEditDonationActivity.class);
             intent.putExtra("mode", "add");
+            intent.putExtra("recipient_id", recipientId);
             startActivity(intent);
         });
 
@@ -159,8 +161,10 @@ public class RecipientDashboardFragment extends Fragment {
             intent.putExtra("mode", "edit");
             intent.putExtra("itemName", selected[0]);
             intent.putExtra("quantity", selected[2]);
-            intent.putExtra("request_id", selected[3]);
+            intent.putExtra("request_id", Integer.parseInt(selected[3]));
             intent.putExtra("description", selected[4]);
+            intent.putExtra("cat_id", Integer.parseInt(selected[5]));
+            intent.putExtra("recipient_id", recipientId);
             startActivity(intent);
         });
 

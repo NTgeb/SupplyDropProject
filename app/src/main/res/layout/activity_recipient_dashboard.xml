@@ -47,7 +47,7 @@
         android:textSize="12sp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:minHeight="0dp"
+        android:minHeight="30dp"
         android:minWidth="0dp"
         android:background="@color/yellow"
         app:backgroundTint="@null"
@@ -68,7 +68,7 @@
         android:textSize="12sp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:minHeight="0dp"
+        android:minHeight="30dp"
         android:minWidth="0dp"
         android:background="#AA000000"
         app:backgroundTint="@null"
@@ -85,18 +85,17 @@
         android:layout_marginEnd="16dp"
         android:text="Remove"
         android:fontFamily="@font/luckiest_guy"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="12sp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:minHeight="0dp"
+        android:minHeight="30dp"
         android:minWidth="0dp"
-        android:background="#CC990000"
+        android:background="#b22222"
         app:backgroundTint="@null"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toEndOf="@id/editBtn"
         app:layout_constraintEnd_toEndOf="parent"/>
-
     <!-- Table Header -->
     <LinearLayout
         android:id="@+id/tableHeader"
@@ -106,7 +105,7 @@
         android:background="#AA000000"
         android:layout_marginTop="12dp"
         android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/addBtn"
+        app:layout_constraintTop_toBottomOf="@id/editBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
