@@ -1,12 +1,13 @@
 package com.example.supplydrop;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,9 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     Button btnEnter;
     RadioGroup donorRecip;
-    EditText edtName,edtEmail,edtUsername,edtCell,edtAddress,edtCity,edtPassword;
-    String userType,name,email,password,username,cell,address,city;
-
+    EditText edtName, edtEmail, edtUsername, edtCell, edtAddress, edtCity, edtPassword;
+    String userType, name, email, password, username, cell, address, city;
 
     String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/register.php";
 
@@ -62,82 +62,194 @@ public class RegisterActivity extends AppCompatActivity {
         edtCity = findViewById(R.id.cityTxt);
         btnEnter = findViewById(R.id.btnRegEnter);
 
-        donorRecip.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(@NonNull RadioGroup group, int checkedId) {
-                RadioButton selection = findViewById(checkedId);
-
-                userType = selection.getText().toString();
-            }
+        donorRecip.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton selection = findViewById(checkedId);
+            userType = selection.getText().toString();
         });
 
-        btnEnter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnEnter.setOnClickListener(v -> {
+            name = edtName.getText().toString().trim();
+            email = edtEmail.getText().toString().trim();
+            password = edtPassword.getText().toString().trim();
+            username = edtUsername.getText().toString().trim();
+            cell = edtCell.getText().toString().trim();
+            address = edtAddress.getText().toString().trim();
+            city = edtCity.getText().toString().trim();
 
-                name = edtName.getText().toString();
-                email = edtEmail.getText().toString();
-                password = edtPassword.getText().toString();
-                username = edtUsername.getText().toString();
-                cell = edtCell.getText().toString();
-                address = edtAddress.getText().toString();
-                city = edtCity.getText().toString();
-
-                postRegister(userType,name,email,password,username,cell,address,city);
-
+            if (userType == null || userType.isEmpty()) {
+                Toast.makeText(this, "Please select Donor or Recipient",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty()
+                    || username.isEmpty() || cell.isEmpty()
+                    || address.isEmpty() || city.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            postRegister(userType, name, email, password,
+                    username, cell, address, city);
+        });
     }
 
-    public void postRegister(String userType,String name,String email,String password,String username,String cell,String address,String city){
+    public void postRegister(String userType, String name, String email,
+                             String password, String username, String cell,
+                             String address, String city) {
 
-                RequestBody requestBody = new FormBody.Builder()
-                        .add("userType" , userType)
-                        .add("email" , email)
-                        .add("password",password)
-                        .add("fname" , name)
-                        .add("username" , username)
-                        .add("cellphone" , cell)
-                        .add("address" , address)
-                        .add("city" , city)
-                        .build();
-                Request request = new Request.Builder()
-                        .url(postUrl)
-                        .post(requestBody)
-                        .build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("userType", userType)
+                .add("email", email)
+                .add("password", password)
+                .add("fname", name)
+                .add("username", username)
+                .add("cellphone", cell)
+                .add("address", address)
+                .add("city", city)
+                .build();
 
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(RegisterActivity.this,
-                                        "Connection failed",
-                                        Toast.LENGTH_SHORT).show();
+        Request request = new Request.Builder()
+                .url(postUrl)
+                .post(requestBody)
+                .build();
 
-                            }
-                        });
-                    }
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(RegisterActivity.this,
+                                "Connection failed",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        final String responseBody = response.body().string();
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(RegisterActivity.this,
-                                        responseBody,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response) throws IOException {
+                final String responseBody = response.body().string();
+                runOnUiThread(() -> {
+                    if (responseBody.contains("successfully")) {
+                        if (userType.equals("Recipient")) {
+                            // Fetch recipient profile to store in SharedPreferences
+                            fetchRecipientAfterRegister(email);
+                        } else {
+                            // Donors fetch donor profile then go to DonorActivity
+                            fetchDonorAfterRegister(email);
+                        }
+                    } else {
+                        Toast.makeText(RegisterActivity.this,
+                                responseBody,
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
+            }
+        });
     }
 
+    private void fetchRecipientAfterRegister(String email) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("email", email)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://wmc.ms.wits.ac.za/students/sgroup2711/get_recipient.php")
+                .post(requestBody)
+                .build();
 
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(RegisterActivity.this,
+                                "Registered but failed to load profile",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response) throws IOException {
+                final String responseBody = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(responseBody);
+                        if (obj.getBoolean("success")) {
+                            SharedPreferences prefs = getSharedPreferences(
+                                    "SupplyDropPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt("recipient_id",
+                                    obj.getInt("recipient_id"));
+                            editor.putString("email", email);
+                            editor.putString("user_type", "Recipient");
+                            editor.putString("full_name",
+                                    obj.getString("full_name"));
+                            editor.apply();
+
+                            Intent intent = new Intent(RegisterActivity.this,
+                                    SelectItemsActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterActivity.this,
+                                "Error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    private void fetchDonorAfterRegister(String email) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("email", email)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://wmc.ms.wits.ac.za/students/sgroup2711/get_donor.php")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(RegisterActivity.this,
+                                "Registered but failed to load profile",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response) throws IOException {
+                final String responseBody = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(responseBody);
+                        if (obj.getBoolean("success")) {
+                            SharedPreferences prefs = getSharedPreferences(
+                                    "SupplyDropPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt("donor_id",
+                                    obj.getInt("donor_id"));
+                            editor.putString("email", email);
+                            editor.putString("user_type", "Donor");
+                            editor.putString("full_name",
+                                    obj.getString("full_name"));
+                            editor.apply();
+
+                            Intent intent = new Intent(RegisterActivity.this,
+                                    DonorActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterActivity.this,
+                                "Error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
 }
