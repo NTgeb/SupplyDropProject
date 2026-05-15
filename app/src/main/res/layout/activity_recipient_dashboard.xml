@@ -53,28 +53,8 @@
         app:backgroundTint="@null"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/editBtn"/>
-
-    <Button
-        android:id="@+id/editBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="4dp"
-        android:text="Edit"
-        android:fontFamily="@font/luckiest_guy"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:background="#AA000000"
-        app:backgroundTint="@null"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintStart_toEndOf="@id/addBtn"
         app:layout_constraintEnd_toStartOf="@id/removeBtn"/>
+
 
     <Button
         android:id="@+id/removeBtn"
@@ -85,16 +65,16 @@
         android:layout_marginEnd="16dp"
         android:text="Remove"
         android:fontFamily="@font/luckiest_guy"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="12sp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:minHeight="0dp"
         android:minWidth="0dp"
-        android:background="#CC990000"
+        android:background="#b22222"
         app:backgroundTint="@null"
         app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintStart_toEndOf="@id/editBtn"
+        app:layout_constraintStart_toEndOf="@id/addBtn"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Table Header -->

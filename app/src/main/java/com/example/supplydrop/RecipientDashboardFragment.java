@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RecipientDashboardFragment extends Fragment {
 
-    Button addBtn, editBtn, removeBtn;
+    Button addBtn, removeBtn;
     ListView donationRequestsListView;
     List<String[]> allRequests = new ArrayList<>();
     DonationRequestAdapter adapter;
@@ -25,7 +25,6 @@ public class RecipientDashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_recipient_dashboard, container, false);
 
         addBtn = view.findViewById(R.id.addBtn);
-        editBtn = view.findViewById(R.id.editBtn);
         removeBtn = view.findViewById(R.id.removeBtn);
         donationRequestsListView = view.findViewById(R.id.donationRequestsListView);
 
@@ -47,7 +46,16 @@ public class RecipientDashboardFragment extends Fragment {
         donationRequestsListView.setAdapter(adapter);
 
         donationRequestsListView.setOnItemClickListener((parent, view, position, id) -> {
-            adapter.setSelectedPosition(position);
+            // Get the clicked item's data
+            String[] clickedItem = allRequests.get(position);
+
+            // Open AddOrEditDonationActivity in edit mode
+            // and pass the existing data to pre-fill the fields
+            Intent intent = new Intent(requireContext(), AddOrEditDonationActivity.class);
+            intent.putExtra("mode", "edit");
+            intent.putExtra("itemName", clickedItem[0]);
+            intent.putExtra("quantity", clickedItem[2]);
+            startActivity(intent);
         });
     }
 
@@ -58,17 +66,6 @@ public class RecipientDashboardFragment extends Fragment {
             startActivity(intent);
         });
 
-        editBtn.setOnClickListener(v -> {
-            if (adapter.getSelectedItem() == null) {
-                Toast.makeText(requireContext(), "Please select an item to edit", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Intent intent = new Intent(requireContext(), AddOrEditDonationActivity.class);
-            intent.putExtra("mode", "edit");
-            intent.putExtra("itemName", adapter.getSelectedItem()[0]);
-            intent.putExtra("quantity", adapter.getSelectedItem()[2]);
-            startActivity(intent);
-        });
 
         removeBtn.setOnClickListener(v -> {
             if (adapter.getSelectedItem() == null) {
