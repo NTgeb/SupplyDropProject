@@ -64,9 +64,12 @@
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/TextInputLayoutEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@drawable/baseline_error_24"
                 app:startIconDrawable="@drawable/email"
                 app:endIconMode="clear_text"
                 android:layout_marginTop="12dp"

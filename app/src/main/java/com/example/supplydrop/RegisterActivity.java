@@ -17,6 +17,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -35,9 +38,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     Button btnEnter;
     RadioGroup donorRecip;
-    EditText edtName, edtEmail, edtUsername, edtCell, edtAddress, edtCity, edtPassword;
+    TextInputEditText edtName, edtEmail, edtUsername, edtCell, edtAddress, edtCity, edtPassword;
     String userType, name, email, password, username, cell, address, city;
 
+    Validator val = new Validator();
     String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/register.php";
 
     @Override
@@ -68,26 +72,48 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         btnEnter.setOnClickListener(v -> {
-            name = edtName.getText().toString().trim();
-            email = edtEmail.getText().toString().trim();
-            password = edtPassword.getText().toString().trim();
-            username = edtUsername.getText().toString().trim();
-            cell = edtCell.getText().toString().trim();
-            address = edtAddress.getText().toString().trim();
-            city = edtCity.getText().toString().trim();
+            name = edtName.getText() != null ? edtName.getText().toString().trim(): "";
+            email = edtEmail.getText() != null ? edtEmail.getText().toString().trim(): "";
+            password = edtPassword.getText() != null ? edtPassword.getText().toString().trim(): "";
+            username = edtUsername.getText() != null ? edtUsername.getText().toString().trim(): "";
+            cell = edtCell.getText() != null ? edtCell.getText().toString().trim(): "";
+            address = edtAddress.getText() != null ? edtAddress.getText().toString().trim(): "";
+            city = edtCity.getText() != null ? edtCity.getText().toString().trim(): "";
 
             if (userType == null || userType.isEmpty()) {
                 Toast.makeText(this, "Please select Donor or Recipient",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty()
-                    || username.isEmpty() || cell.isEmpty()
-                    || address.isEmpty() || city.isEmpty()) {
+            //Empty Fields
+            boolean bEmpty = val.empty(name) || val.empty(email) || val.empty(password) ||
+                            val.empty(username) || val.empty(cell) || val.empty(address)
+                            || val.empty(city);
+            if (bEmpty) {
                 Toast.makeText(this, "Please fill in all fields",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
+            //Valid email check
+            TextInputLayout txtInLEmail = findViewById(R.id.TextInputLayoutEmail);
+            if(!val.email(email)){
+                txtInLEmail.setError("Please enter a valid email");
+                return;
+            }
+            else{
+                txtInLEmail.setError(null);
+            }
+            //Password Length
+            if(!val.password(password)){
+                edtPassword.setError("Password must be between 8-30 characters");
+                return;
+            }
+            //Valid Cellphone
+            if(!val.phone(cell)){
+                edtCell.setError("Please enter a valid cellphone number");
+                return;
+            }
+
 
             postRegister(userType, name, email, password,
                     username, cell, address, city);

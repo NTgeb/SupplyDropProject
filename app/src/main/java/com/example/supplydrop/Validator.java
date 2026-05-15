@@ -32,10 +32,10 @@ public class Validator {
         return s.isEmpty();
     }
     public boolean minLength(String s,int minLen){
-        return s.length() <= minLen;
+        return s.length() >= minLen;
     }
     public boolean maxLength(String s,int maxLen){
-        return s.length() >= maxLen;
+        return s.length() <= maxLen;
     }
     public boolean minMaxLength(String s, int minLen,int maxLen){
         return minLength(s,minLen) && maxLength(s,maxLen);
