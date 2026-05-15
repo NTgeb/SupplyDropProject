@@ -49,8 +49,8 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
     int recipientId = -1;
     int requestId = -1;
 
-    String getCategoriesUrl = "https://courses.ms.wits.ac.za/dbf/get_categories.php";
-    String saveDonationUrl  = "https://courses.ms.wits.ac.za/dbf/save_donation.php";
+    String getCategoriesUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/get_categories.php";
+    String saveDonationUrl  = "https://wmc.ms.wits.ac.za/students/sgroup2711/save_donation.php";
 
     // Image picker launcher
     ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
@@ -175,8 +175,6 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
     }
 
     private void checkMode() {
-        // Check if we're editing an existing entry
-        // When wiring to DB later, pass the existing data via Intent extras
         mode = getIntent().getStringExtra("mode");
         if (mode == null) mode = "add";
 
@@ -192,8 +190,10 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
                 quantity = Integer.parseInt(existingQty);
                 quantityTv.setText(existingQty);
             }
+            // Spinner selection is handled inside setupCategorySpinner
+            // once the categories have loaded from the DB
         }
-        }
+    }
 
 
     private void setupSaveButton() {
