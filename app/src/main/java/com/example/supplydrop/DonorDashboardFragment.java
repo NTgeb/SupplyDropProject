@@ -1,8 +1,6 @@
 package com.example.supplydrop;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,17 +31,20 @@ import okhttp3.Response;
 
 public class DonorDashboardFragment extends Fragment {
 
-    Spinner categorySpinner, areaSpinner;
+    Spinner categorySpinner, areaSpinner, itemSpinner;
     Button clearBtn;
     ListView recipientListView;
 
-    List<String[]> allRecipients = new ArrayList<>();
-    List<String[]> filteredRecipients = new ArrayList<>();
+    // All requests from DB
+    // { recipientName, itemName, city, catName, requestId, recipientId }
+    List<String[]> allRequests = new ArrayList<>();
+    List<String[]> filteredRequests = new ArrayList<>();
 
     List<String> categoryList = new ArrayList<>();
     List<String> areaList = new ArrayList<>();
+    List<String> itemList = new ArrayList<>();
 
-    ArrayAdapter<String> categoryAdapter, areaAdapter;
+    ArrayAdapter<String> categoryAdapter, areaAdapter, itemAdapter;
     OkHttpClient client = new OkHttpClient();
 
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
@@ -55,6 +56,7 @@ public class DonorDashboardFragment extends Fragment {
 
         categorySpinner = view.findViewById(R.id.categorySpinner);
         areaSpinner = view.findViewById(R.id.areaSpinner);
+        itemSpinner = view.findViewById(R.id.itemSpinner);
         clearBtn = view.findViewById(R.id.clearBtn);
         recipientListView = view.findViewById(R.id.recipientListView);
 
@@ -64,7 +66,7 @@ public class DonorDashboardFragment extends Fragment {
 
         setupSpinners();
         setupClearButton();
-        fetchRecipients();
+        fetchAllRequests();
 
         return view;
     }
@@ -86,11 +88,19 @@ public class DonorDashboardFragment extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         areaSpinner.setAdapter(areaAdapter);
 
+        // Item spinner
+        itemList.add("All Items");
+        itemAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item, itemList);
+        itemAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        itemSpinner.setAdapter(itemAdapter);
+
         AdapterView.OnItemSelectedListener filterListener =
                 new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> parent, View view,
-                                               int position, long id) {
+                    public void onItemSelected(AdapterView<?> parent,
+                                               View view, int position, long id) {
                         applyFilters();
                     }
                     @Override
@@ -99,49 +109,12 @@ public class DonorDashboardFragment extends Fragment {
 
         categorySpinner.setOnItemSelectedListener(filterListener);
         areaSpinner.setOnItemSelectedListener(filterListener);
-
-        // Fetch categories from DB to populate category spinner
-        fetchCategories();
+        itemSpinner.setOnItemSelectedListener(filterListener);
     }
 
-    private void fetchCategories() {
+    private void fetchAllRequests() {
         Request request = new Request.Builder()
-                .url(baseUrl + "get_categories.php")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                // Keep "All Categories" only if it fails
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
-                final String body = response.body().string();
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    try {
-                        JSONObject obj = new JSONObject(body);
-                        if (obj.getBoolean("success")) {
-                            JSONArray categories = obj.getJSONArray("categories");
-                            for (int i = 0; i < categories.length(); i++) {
-                                JSONObject cat = categories.getJSONObject(i);
-                                categoryList.add(cat.getString("cat_name"));
-                            }
-                            categoryAdapter.notifyDataSetChanged();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-        });
-    }
-
-    private void fetchRecipients() {
-        Request request = new Request.Builder()
-                .url(baseUrl + "get_recipients.php")
+                .url(baseUrl + "get_all_requests.php")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -150,7 +123,7 @@ public class DonorDashboardFragment extends Fragment {
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() ->
                         Toast.makeText(requireContext(),
-                                "Failed to load recipients",
+                                "Failed to load requests",
                                 Toast.LENGTH_SHORT).show()
                 );
             }
@@ -164,36 +137,53 @@ public class DonorDashboardFragment extends Fragment {
                     try {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
-                            JSONArray recipients = obj.getJSONArray("recipients");
-                            allRecipients.clear();
+                            JSONArray requests = obj.getJSONArray("requests");
+                            allRequests.clear();
                             areaList.clear();
                             areaList.add("All Areas");
+                            categoryList.clear();
+                            categoryList.add("All Categories");
+                            itemList.clear();
+                            itemList.add("All Items");
 
-                            for (int i = 0; i < recipients.length(); i++) {
-                                JSONObject r = recipients.getJSONObject(i);
-                                String name = r.getString("full_name");
+                            for (int i = 0; i < requests.length(); i++) {
+                                JSONObject r = requests.getJSONObject(i);
+                                String recipientName = r.getString("full_name");
+                                String itemName = r.getString("item_name");
                                 String city = r.getString("city");
-                                String categories = r.optString("categories", "");
+                                String catName = r.getString("cat_name");
+                                String requestId = r.getString("request_id");
                                 String recipientId = r.getString("recipient_id");
 
-                                // { name, categories, city, recipientId }
-                                allRecipients.add(new String[]{
-                                        name, categories, city, recipientId
+                                // { recipientName, itemName, city,
+                                //   catName, requestId, recipientId }
+                                allRequests.add(new String[]{
+                                        recipientName, itemName,
+                                        city, catName,
+                                        requestId, recipientId
                                 });
 
-                                // Add city to area spinner if not already there
+                                // Populate filter spinners dynamically
                                 if (!areaList.contains(city)) {
                                     areaList.add(city);
                                 }
+                                if (!categoryList.contains(catName)) {
+                                    categoryList.add(catName);
+                                }
+                                if (!itemList.contains(itemName)) {
+                                    itemList.add(itemName);
+                                }
                             }
 
-                            filteredRecipients.addAll(allRecipients);
+                            filteredRequests.addAll(allRequests);
+                            categoryAdapter.notifyDataSetChanged();
                             areaAdapter.notifyDataSetChanged();
-                            setupRecipientList();
+                            itemAdapter.notifyDataSetChanged();
+                            setupRequestList();
 
                         } else {
                             Toast.makeText(requireContext(),
-                                    "No recipients found",
+                                    "No requests found",
                                     Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
@@ -207,30 +197,37 @@ public class DonorDashboardFragment extends Fragment {
     }
 
     private void applyFilters() {
+        if (categorySpinner.getSelectedItem() == null) return;
+
         String selectedCategory = categorySpinner.getSelectedItem().toString();
         String selectedArea = areaSpinner.getSelectedItem().toString();
+        String selectedItem = itemSpinner.getSelectedItem().toString();
 
-        filteredRecipients.clear();
-        for (String[] recipient : allRecipients) {
+        filteredRequests.clear();
+        for (String[] request : allRequests) {
             boolean categoryMatch = selectedCategory.equals("All Categories")
-                    || recipient[1].contains(selectedCategory);
+                    || request[3].equals(selectedCategory);
             boolean areaMatch = selectedArea.equals("All Areas")
-                    || recipient[2].equals(selectedArea);
-            if (categoryMatch && areaMatch) {
-                filteredRecipients.add(recipient);
+                    || request[2].equals(selectedArea);
+            boolean itemMatch = selectedItem.equals("All Items")
+                    || request[1].equals(selectedItem);
+
+            if (categoryMatch && areaMatch && itemMatch) {
+                filteredRequests.add(request);
             }
         }
         updateListView();
     }
 
-    private void setupRecipientList() {
+    private void setupRequestList() {
         updateListView();
         recipientListView.setOnItemClickListener((parent, view, position, id) -> {
-            String[] recipient = filteredRecipients.get(position);
+            String[] request = filteredRequests.get(position);
             Intent intent = new Intent(requireContext(),
                     SingleRecipientActivity.class);
-            intent.putExtra("recipient_id", recipient[3]);
-            intent.putExtra("recipient_name", recipient[0]);
+            intent.putExtra("request_id", request[4]);
+            intent.putExtra("recipient_id", request[5]);
+            intent.putExtra("recipient_name", request[0]);
             startActivity(intent);
         });
     }
@@ -238,11 +235,11 @@ public class DonorDashboardFragment extends Fragment {
     private void updateListView() {
         if (recipientListView.getAdapter() == null) {
             RecipientAdapter adapter = new RecipientAdapter(
-                    requireContext(), filteredRecipients);
+                    requireContext(), filteredRequests);
             recipientListView.setAdapter(adapter);
         } else {
             ((RecipientAdapter) recipientListView.getAdapter())
-                    .updateData(filteredRecipients);
+                    .updateData(filteredRequests);
         }
     }
 
@@ -250,6 +247,7 @@ public class DonorDashboardFragment extends Fragment {
         clearBtn.setOnClickListener(v -> {
             categorySpinner.setSelection(0);
             areaSpinner.setSelection(0);
+            itemSpinner.setSelection(0);
         });
     }
 }

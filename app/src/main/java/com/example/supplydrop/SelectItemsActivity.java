@@ -65,11 +65,13 @@ public class SelectItemsActivity extends AppCompatActivity {
         fetchCategories();
 
         confirmBtn.setOnClickListener(v -> {
+            confirmBtn.setEnabled(false);
             List<String> selectedItems = adapter.getSelectedItems();
             if (selectedItems.isEmpty()) {
                 Toast.makeText(this,
                         "Please select at least one item",
                         Toast.LENGTH_SHORT).show();
+                confirmBtn.setEnabled(true); // re-enable if validation fails
                 return;
             }
             saveSelectedItems(selectedItems);
@@ -210,15 +212,12 @@ public class SelectItemsActivity extends AppCompatActivity {
             RequestBody requestBody = new FormBody.Builder()
                     .add("recipient_id", String.valueOf(recipientId))
                     .add("item_name", itemName)
-                    .add("description", "")
-                    .add("quantity", "1")
                     .add("cat_id", String.valueOf(catId))
                     .add("item_id", String.valueOf(itemId))
-                    .add("mode", "add")
                     .build();
 
             Request request = new Request.Builder()
-                    .url(baseUrl + "save_donation.php")
+                    .url(baseUrl + "save_initial_requests.php")
                     .post(requestBody)
                     .build();
 
