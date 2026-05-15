@@ -53,13 +53,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         client = new OkHttpClient();
         donorRecip = findViewById(R.id.rgbDonorRecip);
-        edtName = findViewById(R.id.fullnameTxt);
+        edtName = findViewById(R.id.txtfName);
         edtEmail = findViewById(R.id.txtemail);
-        edtPassword = findViewById(R.id.passwordRegTxt);
-        edtUsername = findViewById(R.id.usernameTxt);
-        edtCell = findViewById(R.id.cellphoneTxt);
-        edtAddress = findViewById(R.id.txtAdress);
-        edtCity = findViewById(R.id.cityTxt);
+        edtPassword = findViewById(R.id.txtpassword);
+        edtUsername = findViewById(R.id.txtusername);
+        edtCell = findViewById(R.id.txtcellphone);
+        edtAddress = findViewById(R.id.txtaddress);
+        edtCity = findViewById(R.id.txtaddress);
         btnEnter = findViewById(R.id.btnRegEnter);
 
         donorRecip.setOnCheckedChangeListener((group, checkedId) -> {
