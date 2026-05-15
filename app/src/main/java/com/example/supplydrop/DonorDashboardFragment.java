@@ -2,12 +2,15 @@ package com.example.supplydrop;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -32,11 +35,10 @@ import okhttp3.Response;
 public class DonorDashboardFragment extends Fragment {
 
     Spinner categorySpinner, areaSpinner, itemSpinner;
+    EditText recipientSearch;
     Button clearBtn;
     ListView recipientListView;
 
-    // All requests from DB
-    // { recipientName, itemName, city, catName, requestId, recipientId }
     List<String[]> allRequests = new ArrayList<>();
     List<String[]> filteredRequests = new ArrayList<>();
 
@@ -48,21 +50,28 @@ public class DonorDashboardFragment extends Fragment {
     OkHttpClient client = new OkHttpClient();
 
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
+    String filterRecipientName = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        categorySpinner = view.findViewById(R.id.categorySpinner);
-        areaSpinner = view.findViewById(R.id.areaSpinner);
-        itemSpinner = view.findViewById(R.id.itemSpinner);
-        clearBtn = view.findViewById(R.id.clearBtn);
+        categorySpinner  = view.findViewById(R.id.categorySpinner);
+        areaSpinner      = view.findViewById(R.id.areaSpinner);
+        itemSpinner      = view.findViewById(R.id.itemSpinner);
+        recipientSearch  = view.findViewById(R.id.recipientSearch);
+        clearBtn         = view.findViewById(R.id.clearBtn);
         recipientListView = view.findViewById(R.id.recipientListView);
 
-        // Hide profile icon since account is in bottom nav
         ImageButton profileIcon = view.findViewById(R.id.profileIcon);
         profileIcon.setVisibility(View.GONE);
+
+        // Check if coming from View Other Donations on profile screen
+        if (getActivity() != null) {
+            filterRecipientName = getActivity().getIntent()
+                    .getStringExtra("filter_recipient");
+        }
 
         setupSpinners();
         setupClearButton();
@@ -96,11 +105,13 @@ public class DonorDashboardFragment extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         itemSpinner.setAdapter(itemAdapter);
 
+        // Spinner filter listener
         AdapterView.OnItemSelectedListener filterListener =
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent,
-                                               View view, int position, long id) {
+                                               View view, int position,
+                                               long id) {
                         applyFilters();
                     }
                     @Override
@@ -110,6 +121,20 @@ public class DonorDashboardFragment extends Fragment {
         categorySpinner.setOnItemSelectedListener(filterListener);
         areaSpinner.setOnItemSelectedListener(filterListener);
         itemSpinner.setOnItemSelectedListener(filterListener);
+
+        // Recipient text search filter
+        recipientSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                applyFilters();
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 
     private void fetchAllRequests() {
@@ -149,11 +174,11 @@ public class DonorDashboardFragment extends Fragment {
                             for (int i = 0; i < requests.length(); i++) {
                                 JSONObject r = requests.getJSONObject(i);
                                 String recipientName = r.getString("full_name");
-                                String itemName = r.getString("item_name");
-                                String city = r.getString("city");
-                                String catName = r.getString("cat_name");
-                                String requestId = r.getString("request_id");
-                                String recipientId = r.getString("recipient_id");
+                                String itemName      = r.getString("item_name");
+                                String city          = r.getString("city");
+                                String catName       = r.getString("cat_name");
+                                String requestId     = r.getString("request_id");
+                                String recipientId   = r.getString("recipient_id");
 
                                 // { recipientName, itemName, city,
                                 //   catName, requestId, recipientId }
@@ -163,22 +188,25 @@ public class DonorDashboardFragment extends Fragment {
                                         requestId, recipientId
                                 });
 
-                                // Populate filter spinners dynamically
-                                if (!areaList.contains(city)) {
+                                if (!areaList.contains(city))
                                     areaList.add(city);
-                                }
-                                if (!categoryList.contains(catName)) {
+                                if (!categoryList.contains(catName))
                                     categoryList.add(catName);
-                                }
-                                if (!itemList.contains(itemName)) {
+                                if (!itemList.contains(itemName))
                                     itemList.add(itemName);
-                                }
                             }
 
-                            filteredRequests.addAll(allRequests);
                             categoryAdapter.notifyDataSetChanged();
                             areaAdapter.notifyDataSetChanged();
                             itemAdapter.notifyDataSetChanged();
+
+                            // Auto-fill search if coming from profile screen
+                            if (filterRecipientName != null) {
+                                recipientSearch.setText(filterRecipientName);
+                                filterRecipientName = null;
+                            }
+
+                            filteredRequests.addAll(allRequests);
                             setupRequestList();
 
                         } else {
@@ -200,19 +228,23 @@ public class DonorDashboardFragment extends Fragment {
         if (categorySpinner.getSelectedItem() == null) return;
 
         String selectedCategory = categorySpinner.getSelectedItem().toString();
-        String selectedArea = areaSpinner.getSelectedItem().toString();
-        String selectedItem = itemSpinner.getSelectedItem().toString();
+        String selectedArea     = areaSpinner.getSelectedItem().toString();
+        String selectedItem     = itemSpinner.getSelectedItem().toString();
+        String searchedRecipient = recipientSearch.getText()
+                .toString().trim().toLowerCase();
 
         filteredRequests.clear();
         for (String[] request : allRequests) {
             boolean categoryMatch = selectedCategory.equals("All Categories")
                     || request[3].equals(selectedCategory);
-            boolean areaMatch = selectedArea.equals("All Areas")
+            boolean areaMatch     = selectedArea.equals("All Areas")
                     || request[2].equals(selectedArea);
-            boolean itemMatch = selectedItem.equals("All Items")
+            boolean itemMatch     = selectedItem.equals("All Items")
                     || request[1].equals(selectedItem);
+            boolean recipientMatch = searchedRecipient.isEmpty()
+                    || request[0].toLowerCase().contains(searchedRecipient);
 
-            if (categoryMatch && areaMatch && itemMatch) {
+            if (categoryMatch && areaMatch && itemMatch && recipientMatch) {
                 filteredRequests.add(request);
             }
         }
@@ -221,7 +253,8 @@ public class DonorDashboardFragment extends Fragment {
 
     private void setupRequestList() {
         updateListView();
-        recipientListView.setOnItemClickListener((parent, view, position, id) -> {
+        recipientListView.setOnItemClickListener((parent, view,
+                                                  position, id) -> {
             String[] request = filteredRequests.get(position);
             Intent intent = new Intent(requireContext(),
                     SingleRecipientActivity.class);
@@ -248,6 +281,7 @@ public class DonorDashboardFragment extends Fragment {
             categorySpinner.setSelection(0);
             areaSpinner.setSelection(0);
             itemSpinner.setSelection(0);
+            recipientSearch.setText("");
         });
     }
 }
