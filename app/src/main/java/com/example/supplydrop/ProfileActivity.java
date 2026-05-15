@@ -1,9 +1,25 @@
 package com.example.supplydrop;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -11,15 +27,11 @@ public class ProfileActivity extends AppCompatActivity {
             tvAddress, tvPhone, tvEmail;
     Button btnViewOtherDonations;
 
-    // Placeholder data — replace with DB later
-    String recipientName  = "John Doe";
-    String recipientPhone = "071 234 5678";
-    String recipientEmail = "john@example.com";
-    String recipientAddress = "123 Example Street, Johannesburg, 2000";
-    String recipientWebsite = "www.example.org";
-    String recipientDesc  = "I am a father of 5 struggling to provide " +
-            "basic food supplies for my family this month. " +
-            "Any help is greatly appreciated.";
+    OkHttpClient client = new OkHttpClient();
+    String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
+
+    String recipientId;
+    String recipientName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,24 +46,87 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail              = findViewById(R.id.tvEmail);
         btnViewOtherDonations = findViewById(R.id.btnViewOtherDonations);
 
-        // Fill screen with placeholder data
-        tvRecipientName.setText(recipientName);
-        tvProfileDescription.setText(recipientDesc);
-        tvPhone.setText("📞  " + recipientPhone);
-        tvEmail.setText("✉  " + recipientEmail);
-        tvAddress.setText(recipientAddress);
+        // Get recipient_id passed from SingleRecipientActivity
+        recipientId = getIntent().getStringExtra("recipient_id");
 
-        // Only show website if it exists
-        if (recipientWebsite.isEmpty()) {
-            tvWebsite.setText("No website provided");
-        } else {
-            tvWebsite.setText(recipientWebsite);
-        }
+        fetchProfile();
+    }
 
-        // View Other Donations → back to HomeActivity
-        btnViewOtherDonations.setOnClickListener(v -> {
-            // Intent intent = new Intent(this, HomeActivity.class);
-            // startActivity(intent);
+    private void fetchProfile() {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("recipient_id", recipientId)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(baseUrl + "get_profile.php")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(ProfileActivity.this,
+                                "Failed to load profile",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response) throws IOException {
+                final String body = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(body);
+                        if (obj.getBoolean("success")) {
+                            recipientName = obj.getString("full_name");
+                            String phone       = obj.optString("cellphone", "");
+                            String email       = obj.optString("email", "");
+                            String address     = obj.optString("address", "");
+                            String city        = obj.optString("city", "");
+                            String description = obj.optString("description", "");
+                            String website     = obj.optString("website", "");
+
+                            tvRecipientName.setText(recipientName);
+                            tvProfileDescription.setText(
+                                    description.isEmpty()
+                                            ? "No description provided"
+                                            : description);
+                            tvPhone.setText("📞  " + phone);
+                            tvEmail.setText("✉  " + email);
+                            tvAddress.setText(address + ", " + city);
+
+                            if (website.isEmpty() || website.equals("null")) {
+                                tvWebsite.setText("No website provided");
+                            } else {
+                                tvWebsite.setText(website);
+                            }
+
+                            // Wire up View Other Donations button
+                            btnViewOtherDonations.setOnClickListener(v -> {
+                                Intent intent = new Intent(
+                                        ProfileActivity.this,
+                                        DonorActivity.class);
+                                intent.putExtra("filter_recipient",
+                                        recipientName);
+                                intent.setFlags(
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            });
+
+                        } else {
+                            Toast.makeText(ProfileActivity.this,
+                                    "Profile not found",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(ProfileActivity.this,
+                                "Error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
     }
 }

@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/login_background">
     tools:context=".RegisterActivity">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/loginLbl"
@@ -36,6 +33,7 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/rgbDonorRecip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -65,114 +63,127 @@
 
             </RadioGroup>
 
-            <EditText
-                android:id="@+id/fullnameTxt"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/edittext_background"
-                android:drawableStart="@drawable/name"
-                android:drawablePadding="24dp"
-                android:drawableTint="@color/white"
-                android:ems="10"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter Your Full Name"
-                android:inputType="textPersonName"
-                android:padding="8dp"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                app:startIconDrawable="@drawable/email"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
 
-            <EditText
-                android:id="@+id/usernameTxt"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/edittext_background"
-                android:drawableStart="@drawable/name"
-                android:drawableTint="@color/white"
-                android:drawablePadding="24dp"
-                android:ems="10"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter A Username"
-                android:inputType="text"
-                android:padding="8dp"
-                android:textColor="@color/white" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtemail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" />
 
-            <EditText
-                android:id="@+id/cellphoneTxt"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/edittext_background"
-                android:drawableStart="@drawable/ic_3"
-                android:drawableTint="@color/white"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter Your Cellphone Number"
-                android:inputType="phone"
-                android:padding="8dp"
-                android:textColor="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/Address"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/edittext_background"
-                android:drawableStart="@drawable/ic_2"
-                android:drawableTint="@color/white"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter Your Address"
-                android:inputType="textEmailAddress"
-                android:padding="8dp"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                app:startIconDrawable="@drawable/password"
+                app:endIconMode="password_toggle"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
 
-            <EditText
-                android:id="@+id/cityTxt"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/edittext_background"
-                android:drawableStart="@drawable/ic_2"
-                android:drawableTint="@color/white"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter Your City"
-                android:inputType="textCapWords"
-                android:padding="8dp"
-                android:textColor="@color/white" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtpassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"/>
 
-            <EditText
-                android:id="@+id/IdentificationNo"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/edittext_background"
-                android:drawablePadding="16dp"
-                android:ems="10"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="Enter Your ID number"
-                android:inputType="text|number"
-                android:padding="8dp"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:hint="Full Name"
+                app:startIconDrawable="@drawable/name"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtfName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                app:startIconDrawable="@drawable/name"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtusername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cellphone"
+                app:startIconDrawable="@drawable/phone_24"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtcellphone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                app:startIconDrawable="@drawable/ic_2"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtaddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="City"
+                app:startIconDrawable="@drawable/location_city_24"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="12dp"
+                android:textColorHint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtcity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/imageView3"
+                android:id="@+id/btnRegEnter"
                 android:layout_width="146dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -187,6 +198,7 @@
                 app:srcCompat="@color/yellow" />
 
         </LinearLayout>
-    </ScrollView>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/profileIcon"/>
 
-    <!-- Profile Icon -->
     <ImageButton
         android:id="@+id/profileIcon"
         android:layout_width="40dp"
@@ -36,9 +35,8 @@
         app:tint="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/appTitleLbl" />
+        app:layout_constraintBottom_toBottomOf="@id/appTitleLbl"/>
 
-    <!-- Divider -->
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -48,45 +46,101 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Filter Bar -->
-    <Spinner
-        android:id="@+id/categorySpinner"
+    <!-- Filter container holding all 4 filters -->
+    <LinearLayout
+        android:id="@+id/filterContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/edittext_background"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:popupBackground="#1a1a2e"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/areaSpinner"/>
+        app:layout_constraintEnd_toStartOf="@id/clearBtn">
 
-    <Spinner
-        android:id="@+id/areaSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/edittext_background"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:popupBackground="#1a1a2e"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintStart_toEndOf="@id/categorySpinner"
-        app:layout_constraintEnd_toStartOf="@id/clearBtn"/>
+        <!-- Row 1: Category + Area -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <Spinner
+                android:id="@+id/categorySpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:popupBackground="#1a1a2e"/>
+
+            <Spinner
+                android:id="@+id/areaSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:popupBackground="#1a1a2e"/>
+
+        </LinearLayout>
+
+        <!-- Row 2: Item + Recipient search -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Spinner
+                android:id="@+id/itemSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:popupBackground="#1a1a2e"/>
+
+            <EditText
+                android:id="@+id/recipientSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/edittext_background"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:hint="Recipient Search"
+                android:textColorHint="#88ffffff"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:fontFamily="@font/luckiest_guy"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Clear button spans full height of filter container -->
     <Button
         android:id="@+id/clearBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="12dp"
         android:text="Clear"
@@ -95,16 +149,14 @@
         android:textSize="12sp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:background="@color/yellow"
         app:backgroundTint="@null"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintTop_toTopOf="@id/filterContainer"
+        app:layout_constraintBottom_toBottomOf="@id/filterContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/areaSpinner"
-        app:layout_constraintBottom_toBottomOf="@id/categorySpinner"/>
+        app:layout_constraintStart_toEndOf="@id/filterContainer"/>
 
     <!-- Table Header -->
     <LinearLayout
@@ -115,7 +167,7 @@
         android:background="#AA000000"
         android:layout_marginTop="12dp"
         android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/categorySpinner"
+        app:layout_constraintTop_toBottomOf="@id/filterContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -133,7 +185,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ITEMS NEEDED"
+            android:text="ITEM NEEDED"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:fontFamily="@font/luckiest_guy"
@@ -141,7 +193,6 @@
 
     </LinearLayout>
 
-    <!-- Recipient Table (ListView) -->
     <ListView
         android:id="@+id/recipientListView"
         android:layout_width="match_parent"
