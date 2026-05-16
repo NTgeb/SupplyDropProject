@@ -232,6 +232,7 @@ public class SingleRecipientActivity extends AppCompatActivity {
                         if (obj.getBoolean("success")) {
                             JSONArray similar = obj.getJSONArray("similar");
                             List<String> similarList = new ArrayList<>();
+                            List<String[]> similarMeta = new ArrayList<>();
 
                             for (int i = 0; i < similar.length(); i++) {
                                 JSONObject s = similar.getJSONObject(i);
@@ -241,6 +242,11 @@ public class SingleRecipientActivity extends AppCompatActivity {
                                                 + s.getString("item_name")
                                                 + " — Needs "
                                                 + s.getString("quantity"));
+                                similarMeta.add(new String[]{
+                                        s.getString("request_id"),
+                                        s.getString("recipient_id"),
+                                        s.getString("full_name")
+                                });
                             }
 
                             if (similarList.isEmpty()) {
@@ -254,6 +260,20 @@ public class SingleRecipientActivity extends AppCompatActivity {
                                             android.R.layout.simple_list_item_1,
                                             similarList);
                             lvSimilarOpportunities.setAdapter(adapter);
+
+                            lvSimilarOpportunities.setOnItemClickListener(
+                                    (parent, view, position, id) -> {
+                                        if (position < similarMeta.size()) {
+                                            String[] meta = similarMeta.get(position);
+                                            Intent intent = new Intent(
+                                                    SingleRecipientActivity.this,
+                                                    SingleRecipientActivity.class);
+                                            intent.putExtra("request_id", meta[0]);
+                                            intent.putExtra("recipient_id", meta[1]);
+                                            intent.putExtra("recipient_name", meta[2]);
+                                            startActivity(intent);
+                                        }
+                                    });
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
