@@ -51,23 +51,23 @@ public class DonorDashboardFragment extends Fragment {
 
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
     String filterRecipientName = null;
+    boolean isFirstLoad = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        categorySpinner  = view.findViewById(R.id.categorySpinner);
-        areaSpinner      = view.findViewById(R.id.areaSpinner);
-        itemSpinner      = view.findViewById(R.id.itemSpinner);
-        recipientSearch  = view.findViewById(R.id.recipientSearch);
-        clearBtn         = view.findViewById(R.id.clearBtn);
+        categorySpinner   = view.findViewById(R.id.categorySpinner);
+        areaSpinner       = view.findViewById(R.id.areaSpinner);
+        itemSpinner       = view.findViewById(R.id.itemSpinner);
+        recipientSearch   = view.findViewById(R.id.recipientSearch);
+        clearBtn          = view.findViewById(R.id.clearBtn);
         recipientListView = view.findViewById(R.id.recipientListView);
 
         ImageButton profileIcon = view.findViewById(R.id.profileIcon);
         profileIcon.setVisibility(View.GONE);
 
-        // Check if coming from View Other Donations on profile screen
         if (getActivity() != null) {
             filterRecipientName = getActivity().getIntent()
                     .getStringExtra("filter_recipient");
@@ -75,13 +75,17 @@ public class DonorDashboardFragment extends Fragment {
 
         setupSpinners();
         setupClearButton();
-        fetchAllRequests();
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchAllRequests();
+    }
+
     private void setupSpinners() {
-        // Category spinner
         categoryList.add("All Categories");
         categoryAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, categoryList);
@@ -89,7 +93,6 @@ public class DonorDashboardFragment extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(categoryAdapter);
 
-        // Area spinner
         areaList.add("All Areas");
         areaAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, areaList);
@@ -97,7 +100,6 @@ public class DonorDashboardFragment extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         areaSpinner.setAdapter(areaAdapter);
 
-        // Item spinner
         itemList.add("All Items");
         itemAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, itemList);
@@ -105,7 +107,6 @@ public class DonorDashboardFragment extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         itemSpinner.setAdapter(itemAdapter);
 
-        // Spinner filter listener
         AdapterView.OnItemSelectedListener filterListener =
                 new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -122,7 +123,6 @@ public class DonorDashboardFragment extends Fragment {
         areaSpinner.setOnItemSelectedListener(filterListener);
         itemSpinner.setOnItemSelectedListener(filterListener);
 
-        // Recipient text search filter
         recipientSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -164,6 +164,7 @@ public class DonorDashboardFragment extends Fragment {
                         if (obj.getBoolean("success")) {
                             JSONArray requests = obj.getJSONArray("requests");
                             allRequests.clear();
+                            filteredRequests.clear();
                             areaList.clear();
                             areaList.add("All Areas");
                             categoryList.clear();
@@ -180,8 +181,6 @@ public class DonorDashboardFragment extends Fragment {
                                 String requestId     = r.getString("request_id");
                                 String recipientId   = r.getString("recipient_id");
 
-                                // { recipientName, itemName, city,
-                                //   catName, requestId, recipientId }
                                 allRequests.add(new String[]{
                                         recipientName, itemName,
                                         city, catName,
@@ -227,19 +226,19 @@ public class DonorDashboardFragment extends Fragment {
     private void applyFilters() {
         if (categorySpinner.getSelectedItem() == null) return;
 
-        String selectedCategory = categorySpinner.getSelectedItem().toString();
-        String selectedArea     = areaSpinner.getSelectedItem().toString();
-        String selectedItem     = itemSpinner.getSelectedItem().toString();
+        String selectedCategory  = categorySpinner.getSelectedItem().toString();
+        String selectedArea      = areaSpinner.getSelectedItem().toString();
+        String selectedItem      = itemSpinner.getSelectedItem().toString();
         String searchedRecipient = recipientSearch.getText()
                 .toString().trim().toLowerCase();
 
         filteredRequests.clear();
         for (String[] request : allRequests) {
-            boolean categoryMatch = selectedCategory.equals("All Categories")
+            boolean categoryMatch  = selectedCategory.equals("All Categories")
                     || request[3].equals(selectedCategory);
-            boolean areaMatch     = selectedArea.equals("All Areas")
+            boolean areaMatch      = selectedArea.equals("All Areas")
                     || request[2].equals(selectedArea);
-            boolean itemMatch     = selectedItem.equals("All Items")
+            boolean itemMatch      = selectedItem.equals("All Items")
                     || request[1].equals(selectedItem);
             boolean recipientMatch = searchedRecipient.isEmpty()
                     || request[0].toLowerCase().contains(searchedRecipient);
