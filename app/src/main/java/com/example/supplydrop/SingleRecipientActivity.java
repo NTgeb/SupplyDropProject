@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,6 +36,7 @@ public class SingleRecipientActivity extends AppCompatActivity {
     TextView tvRecipientTitle, tvDescription, tvCategory,
             tvAmount, tvQuantityNeeded;
     Button btnProfile, btnIncrease, btnDecrease, btnDonate;
+    ImageView imgRecipient;
     ListView lvSimilarOpportunities;
 
     int donationAmount = 1;
@@ -47,46 +51,37 @@ public class SingleRecipientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_recipient);
 
-        tvRecipientTitle   = findViewById(R.id.tvRecipientTitle);
-        tvDescription      = findViewById(R.id.tvDescription);
-        tvCategory         = findViewById(R.id.tvCategory);
-        tvAmount           = findViewById(R.id.tvAmount);
-        tvQuantityNeeded   = findViewById(R.id.tvQuantityNeeded);
-        btnProfile         = findViewById(R.id.btnProfile);
-        btnIncrease        = findViewById(R.id.btnIncrease);
-        btnDecrease        = findViewById(R.id.btnDecrease);
-        btnDonate          = findViewById(R.id.btnDonate);
+        tvRecipientTitle       = findViewById(R.id.tvRecipientTitle);
+        tvDescription          = findViewById(R.id.tvDescription);
+        tvCategory             = findViewById(R.id.tvCategory);
+        tvAmount               = findViewById(R.id.tvAmount);
+        tvQuantityNeeded       = findViewById(R.id.tvQuantityNeeded);
+        btnProfile             = findViewById(R.id.btnProfile);
+        btnIncrease            = findViewById(R.id.btnIncrease);
+        btnDecrease            = findViewById(R.id.btnDecrease);
+        btnDonate              = findViewById(R.id.btnDonate);
+        imgRecipient           = findViewById(R.id.imgRecipient);
         lvSimilarOpportunities = findViewById(R.id.lvSimilarOpportunities);
 
-        // Get donor_id from SharedPreferences
         SharedPreferences prefs = getSharedPreferences(
                 "SupplyDropPrefs", MODE_PRIVATE);
         donorId = prefs.getInt("donor_id", -1);
 
-        // Get request_id and recipient_id passed from DonorDashboardFragment
         requestId   = getIntent().getStringExtra("request_id");
         recipientId = getIntent().getStringExtra("recipient_id");
 
-        // Amount controls
         tvAmount.setText(String.valueOf(donationAmount));
-
-        btnIncrease.setOnClickListener(v -> {
-            donationAmount++;
-            tvAmount.setText(String.valueOf(donationAmount));
-        });
 
         btnDecrease.setOnClickListener(v -> {
             if (donationAmount > 1) {
                 donationAmount--;
                 tvAmount.setText(String.valueOf(donationAmount));
             } else {
-                Toast.makeText(this,
-                        "Minimum donation is 1",
+                Toast.makeText(this, "Minimum donation is 1",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Fetch request details from DB
         fetchRequestDetails();
     }
 
@@ -102,7 +97,8 @@ public class SingleRecipientActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(SingleRecipientActivity.this,
                                 "Failed to load request",
@@ -112,7 +108,8 @@ public class SingleRecipientActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String body = response.body().string();
                 runOnUiThread(() -> {
                     try {
@@ -120,13 +117,14 @@ public class SingleRecipientActivity extends AppCompatActivity {
                         if (obj.getBoolean("success")) {
                             String itemName    = obj.getString("item_name");
                             String description = obj.optString(
-                                    "description", "No description yet");
+                                    "description", "");
                             String quantity    = obj.getString("quantity");
                             String fullName    = obj.getString("full_name");
                             catName            = obj.getString("cat_name");
-                            String catId       = obj.getString("cat_id") ;
+                            String catId       = obj.getString("cat_id");
+                            String itemImage   = obj.optString(
+                                    "item_image", "");
 
-                            // Populate the screen
                             tvRecipientTitle.setText(itemName
                                     + " — " + fullName);
                             tvDescription.setText(
@@ -137,35 +135,43 @@ public class SingleRecipientActivity extends AppCompatActivity {
                             tvQuantityNeeded.setText(
                                     quantity + " remaining");
 
+                            // Load item image using Glide
+                            if (!itemImage.isEmpty()
+                                    && !itemImage.equals("null")) {
+                                Glide.with(SingleRecipientActivity.this)
+                                        .load(itemImage)
+                                        .placeholder(R.drawable.account_circle)
+                                        .into(imgRecipient);
+                            }
+
                             int qty = Integer.parseInt(quantity);
 
-                            // Cap donation amount at available quantity
                             if (qty <= 0) {
-                                // Disable donate button if nothing left
                                 btnDonate.setEnabled(false);
                                 btnDonate.setBackgroundTintList(
-                                        android.content.res.ColorStateList.valueOf(
-                                                android.graphics.Color.GRAY));
+                                        android.content.res.ColorStateList
+                                                .valueOf(android.graphics.Color.GRAY));
                                 btnIncrease.setEnabled(false);
                             } else {
                                 btnDonate.setEnabled(true);
                                 btnDonate.setBackgroundTintList(
-                                        android.content.res.ColorStateList.valueOf(
-                                                getResources().getColor(R.color.yellow)));
-                                // Cap increase button at available quantity
+                                        android.content.res.ColorStateList
+                                                .valueOf(getResources().getColor(
+                                                        R.color.yellow)));
                                 btnIncrease.setOnClickListener(v -> {
                                     if (donationAmount < qty) {
                                         donationAmount++;
-                                        tvAmount.setText(String.valueOf(donationAmount));
+                                        tvAmount.setText(String.valueOf(
+                                                donationAmount));
                                     } else {
-                                        Toast.makeText(SingleRecipientActivity.this,
+                                        Toast.makeText(
+                                                SingleRecipientActivity.this,
                                                 "Maximum available is " + qty,
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
 
-                            // Wire up profile button now we have the data
                             btnProfile.setOnClickListener(v -> {
                                 Intent intent = new Intent(
                                         SingleRecipientActivity.this,
@@ -174,12 +180,11 @@ public class SingleRecipientActivity extends AppCompatActivity {
                                 startActivity(intent);
                             });
 
-                            // Wire up donate button
                             btnDonate.setOnClickListener(v ->
                                     recordDonation(requestId, catId));
 
-                            // Fetch similar opportunities
-                            fetchSimilarRequests(requestId, catId, recipientId);
+                            fetchSimilarRequests(requestId, catId,
+                                    recipientId);
 
                         } else {
                             Toast.makeText(SingleRecipientActivity.this,
@@ -214,9 +219,7 @@ public class SingleRecipientActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call,
-                                  @NonNull IOException e) {
-                // Silently fail for similar opportunities
-            }
+                                  @NonNull IOException e) {}
 
             @Override
             public void onResponse(@NonNull Call call,
@@ -262,8 +265,7 @@ public class SingleRecipientActivity extends AppCompatActivity {
 
     private void recordDonation(String requestId, String catId) {
         if (donorId == -1) {
-            Toast.makeText(this,
-                    "Error: donor not found",
+            Toast.makeText(this, "Error: donor not found",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -306,7 +308,7 @@ public class SingleRecipientActivity extends AppCompatActivity {
                                     "Thank you! You donated "
                                             + donationAmount + " item(s)!",
                                     Toast.LENGTH_SHORT).show();
-                            finish(); // go back to donor dashboard
+                            finish();
                         } else {
                             btnDonate.setEnabled(true);
                             Toast.makeText(SingleRecipientActivity.this,

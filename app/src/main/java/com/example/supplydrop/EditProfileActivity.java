@@ -14,6 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -21,6 +23,8 @@ import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -33,6 +37,7 @@ public class EditProfileActivity extends AppCompatActivity {
     ImageView profileImageView;
     Button changeImageBtn, saveProfileBtn;
     Uri selectedImageUri = null;
+    String uploadedImageUrl = null;
 
     OkHttpClient client = new OkHttpClient();
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
@@ -64,7 +69,6 @@ public class EditProfileActivity extends AppCompatActivity {
         changeImageBtn   = findViewById(R.id.changeImageBtn);
         saveProfileBtn   = findViewById(R.id.saveProfileBtn);
 
-        // Get recipient_id from SharedPreferences
         SharedPreferences prefs = getSharedPreferences(
                 "SupplyDropPrefs", MODE_PRIVATE);
         recipientId = prefs.getInt("recipient_id", -1);
@@ -104,13 +108,28 @@ public class EditProfileActivity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
-                            // Pre-fill all fields with existing data
-                            recipientNameEt.setText(nullToEmpty(obj.optString("full_name", "")));
-                            descriptionEt.setText(nullToEmpty(obj.optString("description", "")));
-                            phoneEt.setText(nullToEmpty(obj.optString("cellphone", "")));
-                            emailEt.setText(nullToEmpty(obj.optString("email", "")));
-                            websiteEt.setText(nullToEmpty(obj.optString("website", "")));
-                            addressEt.setText(nullToEmpty(obj.optString("address", "")));
+                            recipientNameEt.setText(
+                                    nullToEmpty(obj.optString("full_name")));
+                            descriptionEt.setText(
+                                    nullToEmpty(obj.optString("description")));
+                            phoneEt.setText(
+                                    nullToEmpty(obj.optString("cellphone")));
+                            emailEt.setText(
+                                    nullToEmpty(obj.optString("email")));
+                            websiteEt.setText(
+                                    nullToEmpty(obj.optString("website")));
+                            addressEt.setText(
+                                    nullToEmpty(obj.optString("address")));
+
+                            uploadedImageUrl = nullToEmpty(
+                                    obj.optString("profile_image"));
+
+                            if (!uploadedImageUrl.isEmpty()) {
+                                Glide.with(EditProfileActivity.this)
+                                        .load(uploadedImageUrl)
+                                        .placeholder(R.drawable.account_circle)
+                                        .into(profileImageView);
+                            }
                         }
                     } catch (Exception e) {
                         Toast.makeText(EditProfileActivity.this,
@@ -131,8 +150,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void setupSaveButton()
-    {
+    private void setupSaveButton() {
         saveProfileBtn.setOnClickListener(v -> {
             String name        = recipientNameEt.getText()
                     .toString().trim();
@@ -156,18 +174,40 @@ public class EditProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            RequestBody requestBody = new FormBody.Builder()
-                    .add("recipient_id", String.valueOf(recipientId))
-                    .add("full_name",    name)
-                    .add("description",  description)
-                    .add("cellphone",    phone)
-                    .add("email",        email)
-                    .add("website",      website)
-                    .add("address",      address)
+            saveProfileBtn.setEnabled(false);
+            Toast.makeText(this, "Saving...", Toast.LENGTH_SHORT).show();
+
+            if (selectedImageUri != null) {
+                uploadImageThenSave(name, description, phone,
+                        email, website, address);
+            } else {
+                saveToDatabase(name, description, phone,
+                        email, website, address, uploadedImageUrl);
+            }
+        });
+    }
+
+    private void uploadImageThenSave(String name, String description,
+                                     String phone, String email,
+                                     String website, String address) {
+        try {
+            java.io.InputStream inputStream = getContentResolver()
+                    .openInputStream(selectedImageUri);
+            byte[] imageBytes = new byte[inputStream.available()];
+            inputStream.read(imageBytes);
+            inputStream.close();
+
+            MultipartBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("image",
+                            "profile_" + recipientId + ".jpg",
+                            RequestBody.create(
+                                    imageBytes,
+                                    MediaType.parse("image/jpeg")))
                     .build();
 
             Request request = new Request.Builder()
-                    .url(baseUrl + "update_profile.php")
+                    .url(baseUrl + "upload_image.php")
                     .post(requestBody)
                     .build();
 
@@ -175,11 +215,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Call call,
                                       @NonNull IOException e) {
-                    runOnUiThread(() ->
-                            Toast.makeText(EditProfileActivity.this,
-                                    "Connection failed",
-                                    Toast.LENGTH_SHORT).show()
-                    );
+                    runOnUiThread(() -> {
+                        saveProfileBtn.setEnabled(true);
+                        Toast.makeText(EditProfileActivity.this,
+                                "Image upload failed",
+                                Toast.LENGTH_SHORT).show();
+                    });
                 }
 
                 @Override
@@ -191,25 +232,98 @@ public class EditProfileActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(body);
                             if (obj.getBoolean("success")) {
-                                Toast.makeText(EditProfileActivity.this,
-                                        "Profile updated!",
-                                        Toast.LENGTH_SHORT).show();
-                                finish();
+                                String imageUrl = obj.getString("image_url");
+                                saveToDatabase(name, description, phone,
+                                        email, website, address, imageUrl);
                             } else {
+                                saveProfileBtn.setEnabled(true);
                                 Toast.makeText(EditProfileActivity.this,
-                                        obj.getString("message"),
+                                        "Upload failed: "
+                                                + obj.getString("message"),
                                         Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
+                            saveProfileBtn.setEnabled(true);
                             Toast.makeText(EditProfileActivity.this,
-                                    "Error: " + body,
-                                    Toast.LENGTH_LONG).show();
+                                    "Error: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             });
+        } catch (Exception e) {
+            saveProfileBtn.setEnabled(true);
+            Toast.makeText(this,
+                    "Error reading image: " + e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveToDatabase(String name, String description,
+                                String phone, String email,
+                                String website, String address,
+                                String imageUrl) {
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("recipient_id", String.valueOf(recipientId))
+                .add("full_name",    name)
+                .add("description",  description)
+                .add("cellphone",    phone)
+                .add("email",        email)
+                .add("website",      website)
+                .add("address",      address);
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            formBuilder.add("profile_image", imageUrl);
+        }
+
+        RequestBody requestBody = formBuilder.build();
+        Request request = new Request.Builder()
+                .url(baseUrl + "update_profile.php")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
+                runOnUiThread(() -> {
+                    saveProfileBtn.setEnabled(true);
+                    Toast.makeText(EditProfileActivity.this,
+                            "Connection failed",
+                            Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,
+                                   @NonNull Response response)
+                    throws IOException {
+                final String body = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(body);
+                        if (obj.getBoolean("success")) {
+                            Toast.makeText(EditProfileActivity.this,
+                                    "Profile updated!",
+                                    Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            saveProfileBtn.setEnabled(true);
+                            Toast.makeText(EditProfileActivity.this,
+                                    obj.getString("message"),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        saveProfileBtn.setEnabled(true);
+                        Toast.makeText(EditProfileActivity.this,
+                                "Error: " + body,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         });
     }
+
     private String nullToEmpty(String value) {
         if (value == null || value.equals("null")) return "";
         return value;

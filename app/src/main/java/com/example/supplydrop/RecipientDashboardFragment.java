@@ -30,7 +30,7 @@ import okhttp3.Response;
 
 public class RecipientDashboardFragment extends Fragment {
 
-    Button addBtn, editBtn ,removeBtn;
+    Button addBtn, editBtn, removeBtn;
     ListView donationRequestsListView;
     List<String[]> allRequests = new ArrayList<>();
     DonationRequestAdapter adapter;
@@ -45,12 +45,12 @@ public class RecipientDashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_recipient_dashboard,
                 container, false);
 
-        addBtn = view.findViewById(R.id.addBtn);
+        addBtn    = view.findViewById(R.id.addBtn);
         editBtn   = view.findViewById(R.id.editBtn);
         removeBtn = view.findViewById(R.id.removeBtn);
-        donationRequestsListView = view.findViewById(R.id.donationRequestsListView);
+        donationRequestsListView = view.findViewById(
+                R.id.donationRequestsListView);
 
-        // Get recipient_id from SharedPreferences
         SharedPreferences prefs = requireContext().getSharedPreferences(
                 "SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
         recipientId = prefs.getInt("recipient_id", -1);
@@ -74,7 +74,8 @@ public class RecipientDashboardFragment extends Fragment {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() ->
                         Toast.makeText(requireContext(),
@@ -85,31 +86,37 @@ public class RecipientDashboardFragment extends Fragment {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String body = response.body().string();
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     try {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
-                            JSONArray donations = obj.getJSONArray("donations");
+                            JSONArray donations =
+                                    obj.getJSONArray("donations");
                             allRequests.clear();
 
                             for (int i = 0; i < donations.length(); i++) {
                                 JSONObject d = donations.getJSONObject(i);
-                                String itemName = d.getString("item_name");
-                                String catName = d.getString("cat_name");
-                                String quantity = d.getString("quantity");
-                                String requestId = d.getString("request_id");
-                                String description = d.optString("description", "");
-                                String catId = d.getString("cat_id");
+                                String itemName    = d.getString("item_name");
+                                String catName     = d.getString("cat_name");
+                                String quantity    = d.getString("quantity");
+                                String requestId   = d.getString("request_id");
+                                String description = d.optString(
+                                        "description", "");
+                                String catId       = d.getString("cat_id");
+                                String itemImage   = d.optString(
+                                        "item_image", "");
 
                                 // { itemName, catName, quantity,
-                                //   requestId, description, catId }
+                                //   requestId, description,
+                                //   catId, itemImage }
                                 allRequests.add(new String[]{
                                         itemName, catName,
                                         quantity, requestId,
-                                        description, catId
+                                        description, catId, itemImage
                                 });
                             }
                             adapter.updateData(allRequests);
@@ -164,6 +171,7 @@ public class RecipientDashboardFragment extends Fragment {
             intent.putExtra("request_id", Integer.parseInt(selected[3]));
             intent.putExtra("description", selected[4]);
             intent.putExtra("cat_id", Integer.parseInt(selected[5]));
+            intent.putExtra("item_image", selected[6]);
             intent.putExtra("recipient_id", recipientId);
             startActivity(intent);
         });
@@ -175,7 +183,7 @@ public class RecipientDashboardFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            String itemName = adapter.getSelectedItem()[0];
+            String itemName  = adapter.getSelectedItem()[0];
             String requestId = adapter.getSelectedItem()[3];
             deleteRequest(requestId, itemName);
         });
@@ -194,7 +202,8 @@ public class RecipientDashboardFragment extends Fragment {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() ->
                         Toast.makeText(requireContext(),
@@ -205,7 +214,8 @@ public class RecipientDashboardFragment extends Fragment {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String body = response.body().string();
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
@@ -215,7 +225,6 @@ public class RecipientDashboardFragment extends Fragment {
                             Toast.makeText(requireContext(),
                                     "Removed: " + itemName,
                                     Toast.LENGTH_SHORT).show();
-                            // Refresh the list
                             fetchDonationRequests();
                         } else {
                             Toast.makeText(requireContext(),
@@ -235,7 +244,6 @@ public class RecipientDashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Refresh list when returning from AddOrEditDonationActivity
         fetchDonationRequests();
     }
 }

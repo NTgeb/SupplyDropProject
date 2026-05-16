@@ -3,11 +3,14 @@ package com.example.supplydrop;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONObject;
 
@@ -25,6 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView tvRecipientName, tvProfileDescription, tvWebsite,
             tvAddress, tvPhone, tvEmail;
+    ImageView imgProfileLogo;
     Button btnViewOtherDonations;
 
     OkHttpClient client = new OkHttpClient();
@@ -44,9 +48,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvAddress            = findViewById(R.id.tvAddress);
         tvPhone              = findViewById(R.id.tvPhone);
         tvEmail              = findViewById(R.id.tvEmail);
+        imgProfileLogo       = findViewById(R.id.imgProfileLogo);
         btnViewOtherDonations = findViewById(R.id.btnViewOtherDonations);
 
-        // Get recipient_id passed from SingleRecipientActivity
         recipientId = getIntent().getStringExtra("recipient_id");
 
         fetchProfile();
@@ -64,7 +68,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(ProfileActivity.this,
                                 "Failed to load profile",
@@ -74,19 +79,22 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String body = response.body().string();
                 runOnUiThread(() -> {
                     try {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
-                            recipientName = obj.getString("full_name");
+                            recipientName      = obj.getString("full_name");
                             String phone       = obj.optString("cellphone", "");
                             String email       = obj.optString("email", "");
                             String address     = obj.optString("address", "");
                             String city        = obj.optString("city", "");
                             String description = obj.optString("description", "");
                             String website     = obj.optString("website", "");
+                            String profileImage = obj.optString(
+                                    "profile_image", "");
 
                             tvRecipientName.setText(recipientName);
                             tvProfileDescription.setText(
@@ -103,7 +111,15 @@ public class ProfileActivity extends AppCompatActivity {
                                 tvWebsite.setText(website);
                             }
 
-                            // Wire up View Other Donations button
+                            // Load profile image using Glide
+                            if (!profileImage.isEmpty()
+                                    && !profileImage.equals("null")) {
+                                Glide.with(ProfileActivity.this)
+                                        .load(profileImage)
+                                        .placeholder(R.drawable.account_circle)
+                                        .into(imgProfileLogo);
+                            }
+
                             btnViewOtherDonations.setOnClickListener(v -> {
                                 Intent intent = new Intent(
                                         ProfileActivity.this,
