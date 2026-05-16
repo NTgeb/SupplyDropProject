@@ -98,20 +98,31 @@ public class RegisterActivity extends AppCompatActivity {
             TextInputLayout txtInLEmail = findViewById(R.id.TextInputLayoutEmail);
             if(!val.email(email)){
                 txtInLEmail.setError("Please enter a valid email");
+                edtEmail.requestFocus();
                 return;
             }
             else{
                 txtInLEmail.setError(null);
             }
             //Password Length
+            TextInputLayout txtInLPassword = findViewById(R.id.TextInputLayoutPassword);
             if(!val.password(password)){
-                edtPassword.setError("Password must be between 8-30 characters");
+                txtInLPassword.setError("Password must be between 8-30 characters");
+                edtPassword.requestFocus();
                 return;
             }
+            else{
+                txtInLPassword.setError(null);
+            }
             //Valid Cellphone
+            TextInputLayout txtInLCell = findViewById(R.id.TextInputLayoutCellphone);
             if(!val.phone(cell)){
-                edtCell.setError("Please enter a valid cellphone number");
+                txtInLCell.setError("Please enter a valid cellphone number");
+                edtCell.requestFocus();
                 return;
+            }
+            else{
+                txtInLCell.setError(null);
             }
 
 

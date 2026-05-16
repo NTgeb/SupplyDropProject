@@ -15,7 +15,7 @@ public class Validator {
     }
 
     public boolean phone(String sPhone){
-        return Patterns.PHONE.matcher(sPhone).matches(); //Patter checker for Phone
+        return Patterns.PHONE.matcher(sPhone).matches() && minMaxLength(sPhone,10,10); //Patter checker for Phone
     }
     public boolean password(String sPassword){
         //Check for a heavily restricted password
