@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,10 +32,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+
 public class SingleRecipientActivity extends AppCompatActivity {
 
     TextView tvRecipientTitle, tvDescription, tvCategory,
-            tvAmount, tvQuantityNeeded;
+             tvQuantityNeeded;
+    EditText tvAmount;
     Button btnProfile, btnIncrease, btnDecrease, btnDonate;
     ImageView imgRecipient;
     ListView lvSimilarOpportunities;
@@ -73,12 +76,30 @@ public class SingleRecipientActivity extends AppCompatActivity {
         tvAmount.setText(String.valueOf(donationAmount));
 
         btnDecrease.setOnClickListener(v -> {
+            // Read whatever is currently typed first
+            String currentText = tvAmount.getText().toString().trim();
+            if (!currentText.isEmpty()) {
+                donationAmount = Integer.parseInt(currentText);
+            }
             if (donationAmount > 1) {
                 donationAmount--;
                 tvAmount.setText(String.valueOf(donationAmount));
             } else {
                 Toast.makeText(this, "Minimum donation is 1",
                         Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Validate when user taps away from the amount box
+        tvAmount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String currentText = tvAmount.getText().toString().trim();
+                if (currentText.isEmpty() || Integer.parseInt(currentText) < 1) {
+                    donationAmount = 1;
+                    tvAmount.setText("1");
+                } else {
+                    donationAmount = Integer.parseInt(currentText);
+                }
             }
         });
 
@@ -158,11 +179,16 @@ public class SingleRecipientActivity extends AppCompatActivity {
                                         android.content.res.ColorStateList
                                                 .valueOf(getResources().getColor(
                                                         R.color.yellow)));
+
                                 btnIncrease.setOnClickListener(v -> {
+                                    // Read whatever is currently typed first
+                                    String currentText = tvAmount.getText().toString().trim();
+                                    if (!currentText.isEmpty()) {
+                                        donationAmount = Integer.parseInt(currentText);
+                                    }
                                     if (donationAmount < qty) {
                                         donationAmount++;
-                                        tvAmount.setText(String.valueOf(
-                                                donationAmount));
+                                        tvAmount.setText(String.valueOf(donationAmount));
                                     } else {
                                         Toast.makeText(
                                                 SingleRecipientActivity.this,
