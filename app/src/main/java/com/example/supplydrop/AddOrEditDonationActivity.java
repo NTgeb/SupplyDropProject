@@ -40,7 +40,7 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
 
     EditText itemNameEt, descriptionEt;
     Spinner categorySpinner;
-    TextView quantityTv;
+    EditText quantityTv;
     Button decreaseQtyBtn, increaseQtyBtn, changeImageBtn, saveBtn;
     ImageView itemImageView;
 
@@ -161,16 +161,44 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
     }
 
     private void setupQuantityButtons() {
+        // When minus is clicked
         decreaseQtyBtn.setOnClickListener(v -> {
+            // First read whatever is currently typed in the box
+            String currentText = quantityTv.getText().toString().trim();
+            if (!currentText.isEmpty()) {
+                quantity = Integer.parseInt(currentText);
+            }
+            // Only decrease if above 1
             if (quantity > 1) {
                 quantity--;
                 quantityTv.setText(String.valueOf(quantity));
             }
         });
 
+        // When plus is clicked
         increaseQtyBtn.setOnClickListener(v -> {
+            // First read whatever is currently typed in the box
+            String currentText = quantityTv.getText().toString().trim();
+            if (!currentText.isEmpty()) {
+                quantity = Integer.parseInt(currentText);
+            }
             quantity++;
             quantityTv.setText(String.valueOf(quantity));
+        });
+
+        // When user finishes typing in the box
+        quantityTv.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                // User tapped away from the box — validate what they typed
+                String currentText = quantityTv.getText().toString().trim();
+                if (currentText.isEmpty() || Integer.parseInt(currentText) < 1) {
+                    // If empty or less than 1, reset to 1
+                    quantity = 1;
+                    quantityTv.setText("1");
+                } else {
+                    quantity = Integer.parseInt(currentText);
+                }
+            }
         });
     }
 
