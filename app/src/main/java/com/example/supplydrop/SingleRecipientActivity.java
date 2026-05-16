@@ -371,4 +371,5 @@ public class SingleRecipientActivity extends AppCompatActivity {
             }
         });
     }
+
 }
