@@ -52,7 +52,8 @@ public class SingleRecipientActivity extends AppCompatActivity
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_recipient);
 
@@ -68,8 +69,7 @@ public class SingleRecipientActivity extends AppCompatActivity
         imgRecipient           = findViewById(R.id.imgRecipient);
         lvSimilarOpportunities = findViewById(R.id.lvSimilarOpportunities);
 
-        SharedPreferences prefs = getSharedPreferences(
-                "SupplyDropPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("SupplyDropPrefs", MODE_PRIVATE);
         donorId = prefs.getInt("donor_id", -1);
 
         requestId   = getIntent().getStringExtra("request_id");
@@ -77,37 +77,65 @@ public class SingleRecipientActivity extends AppCompatActivity
 
         tvAmount.setText(String.valueOf(donationAmount));
 
-        btnDecrease.setOnClickListener(v -> {
+        btnDecrease.setOnClickListener(v ->
+        {
             String currentText = tvAmount.getText().toString().trim();
-            if (!currentText.isEmpty()) {
+            if (!currentText.isEmpty())
+            {
                 donationAmount = Integer.parseInt(currentText);
             }
-            if (donationAmount > 1) {
+            if (donationAmount > 1)
+            {
                 donationAmount--;
                 tvAmount.setText(String.valueOf(donationAmount));
-            } else {
+            }
+            else
+            {
                 Toast.makeText(this, "Minimum donation is 1",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
-        tvAmount.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
+        tvAmount.setOnFocusChangeListener((v, hasFocus) ->
+        {
+            if (!hasFocus)
+            {
                 String currentText = tvAmount.getText().toString().trim();
-                if (currentText.isEmpty() || Integer.parseInt(currentText) < 1) {
-                    donationAmount = 1;
-                    tvAmount.setText("1");
-                } else {
-                    int typed = Integer.parseInt(currentText);
-                    if (availableQty > 0 && typed > availableQty) {
+                try
+                {
+                    int typed;
+                    if (currentText.isEmpty())
+                    {
+                        typed = 0;
+                    }
+                    else
+                    {
+                        typed = Integer.parseInt(currentText);
+                    }
+                    if (typed < 1) {
+                        donationAmount = 1;
+                        tvAmount.setText(String.valueOf(1));
+                        Toast.makeText(SingleRecipientActivity.this,
+                                "Minimum donation is 1",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else if (availableQty > 0 && typed > availableQty)
+                    {
                         donationAmount = availableQty;
                         tvAmount.setText(String.valueOf(availableQty));
                         Toast.makeText(SingleRecipientActivity.this,
                                 "Maximum available is " + availableQty,
                                 Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else
+                    {
                         donationAmount = typed;
                     }
+                }
+                catch (NumberFormatException e)
+                {
+                    donationAmount = 1;
+                    tvAmount.setText(String.valueOf(1));
                 }
             }
         });
