@@ -63,6 +63,39 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#44ffffff"/>
+
+    <!-- Donation History Row -->
+    <LinearLayout
+        android:id="@+id/donationLeaderBoard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?attr/selectableItemBackground"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="Donation Leaderboard"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="›"
+            android:textColor="@color/white"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
+
     <!-- Divider -->
     <View
         android:layout_width="match_parent"
