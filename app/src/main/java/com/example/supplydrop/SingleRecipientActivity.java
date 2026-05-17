@@ -33,7 +33,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public class SingleRecipientActivity extends AppCompatActivity {
+public class SingleRecipientActivity extends AppCompatActivity
+{
 
     TextView tvRecipientTitle, tvDescription, tvCategory,
             tvQuantityNeeded;
