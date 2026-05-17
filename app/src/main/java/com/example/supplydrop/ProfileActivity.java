@@ -96,20 +96,35 @@ public class ProfileActivity extends AppCompatActivity {
                             String profileImage = obj.optString(
                                     "profile_image", "");
 
-                            tvRecipientName.setText(recipientName);
-                            tvProfileDescription.setText(
-                                    description.isEmpty()
-                                            ? "No description provided"
-                                            : description);
-                            tvPhone.setText("📞  " + phone);
-                            tvEmail.setText("✉  " + email);
-                            tvAddress.setText(address + ", " + city);
+                            tvRecipientName.setText(nullToEmpty(recipientName));
 
-                            if (website.isEmpty() || website.equals("null")) {
-                                tvWebsite.setText("No website provided");
+                            tvProfileDescription.setText(
+                                    nullToEmpty(description).isEmpty()
+                                            ? "No description provided"
+                                            : nullToEmpty(description));
+
+                            tvPhone.setText(nullToEmpty(phone).isEmpty()
+                                    ? "📞  No phone provided"
+                                    : "📞  " + nullToEmpty(phone));
+
+                            tvEmail.setText(nullToEmpty(email).isEmpty()
+                                    ? "✉  No email provided"
+                                    : "✉  " + nullToEmpty(email));
+
+                            String cleanAddress = nullToEmpty(address);
+                            String cleanCity    = nullToEmpty(city);
+                            if (cleanAddress.isEmpty() && cleanCity.isEmpty()) {
+                                tvAddress.setText("No address provided");
+                            } else if (cleanCity.isEmpty()) {
+                                tvAddress.setText(cleanAddress);
                             } else {
-                                tvWebsite.setText(website);
+                                tvAddress.setText(cleanAddress + ", " + cleanCity);
                             }
+
+                            String cleanWebsite = nullToEmpty(website);
+                            tvWebsite.setText(cleanWebsite.isEmpty()
+                                    ? "No website provided"
+                                    : cleanWebsite);
 
                             // Load profile image using Glide
                             if (!profileImage.isEmpty()
@@ -144,5 +159,9 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+    private String nullToEmpty(String value) {
+        if (value == null || value.equals("null")) return "";
+        return value;
     }
 }
