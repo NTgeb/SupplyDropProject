@@ -96,4 +96,31 @@
         android:layout_height="1dp"
         android:background="#44ffffff"/>
 
+    <!-- Delete Account Row -->
+    <LinearLayout
+        android:id="@+id/deleteAccountRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?attr/selectableItemBackground"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="Delete Account"
+            android:textColor="#FF4444"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#44ffffff"/>
+
 </LinearLayout>
