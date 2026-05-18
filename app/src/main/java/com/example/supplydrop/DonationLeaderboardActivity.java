@@ -131,13 +131,17 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
 
     private void applyFilter(String query) {
         filteredDonors.clear();
-        int position = 1;
-        for (String[] donor : allDonors) {
-            if (query.isEmpty() || donor[1].toLowerCase().contains(query)) {
-                filteredDonors.add(new String[]{
-                        String.valueOf(position), donor[1], donor[2]
-                });
-                position++;
+        if (query.isEmpty()) {
+            filteredDonors.addAll(allDonors);  // ← restore full list
+        } else {
+            int position = 1;
+            for (String[] donor : allDonors) {
+                if (donor[1].toLowerCase().contains(query)) {
+                    filteredDonors.add(new String[]{
+                            String.valueOf(position), donor[1], donor[2]
+                    });
+                    position++;
+                }
             }
         }
         if (adapter != null) {
@@ -147,8 +151,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
 
     private void setupClearButton() {
         clearBtn.setOnClickListener(v -> {
-            usernameSearch.setText("");
-            applyFilter("");
+            usernameSearch.setText("");  // this triggers onTextChanged → applyFilter("")
         });
     }
 }
