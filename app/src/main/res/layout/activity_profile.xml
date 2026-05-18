@@ -162,7 +162,7 @@
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/yellow"
                 android:fontFamily="@font/luckiest_guy"
-                android:text="+ View Other Donations"
+                android:text="+ View Other Requests"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
