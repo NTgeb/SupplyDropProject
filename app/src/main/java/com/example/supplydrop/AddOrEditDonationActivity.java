@@ -1,6 +1,8 @@
 package com.example.supplydrop;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -9,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,7 +23,9 @@ import com.bumptech.glide.Glide;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,15 +82,15 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_or_edit_donation);
 
-        itemNameEt     = findViewById(R.id.itemNameEt);
-        descriptionEt  = findViewById(R.id.descriptionEt);
+        itemNameEt      = findViewById(R.id.itemNameEt);
+        descriptionEt   = findViewById(R.id.descriptionEt);
         categorySpinner = findViewById(R.id.categorySpinner);
-        quantityTv     = findViewById(R.id.quantityTv);
-        decreaseQtyBtn = findViewById(R.id.decreaseQtyBtn);
-        increaseQtyBtn = findViewById(R.id.increaseQtyBtn);
-        changeImageBtn = findViewById(R.id.changeImageBtn);
-        saveBtn        = findViewById(R.id.saveBtn);
-        itemImageView  = findViewById(R.id.itemImageView);
+        quantityTv      = findViewById(R.id.quantityTv);
+        decreaseQtyBtn  = findViewById(R.id.decreaseQtyBtn);
+        increaseQtyBtn  = findViewById(R.id.increaseQtyBtn);
+        changeImageBtn  = findViewById(R.id.changeImageBtn);
+        saveBtn         = findViewById(R.id.saveBtn);
+        itemImageView   = findViewById(R.id.itemImageView);
 
         recipientId = getIntent().getIntExtra("recipient_id", -1);
         requestId   = getIntent().getIntExtra("request_id", -1);
@@ -161,23 +164,18 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
     }
 
     private void setupQuantityButtons() {
-        // When minus is clicked
         decreaseQtyBtn.setOnClickListener(v -> {
-            // First read whatever is currently typed in the box
             String currentText = quantityTv.getText().toString().trim();
             if (!currentText.isEmpty()) {
                 quantity = Integer.parseInt(currentText);
             }
-            // Only decrease if above 1
             if (quantity > 1) {
                 quantity--;
                 quantityTv.setText(String.valueOf(quantity));
             }
         });
 
-        // When plus is clicked
         increaseQtyBtn.setOnClickListener(v -> {
-            // First read whatever is currently typed in the box
             String currentText = quantityTv.getText().toString().trim();
             if (!currentText.isEmpty()) {
                 quantity = Integer.parseInt(currentText);
@@ -186,13 +184,11 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
             quantityTv.setText(String.valueOf(quantity));
         });
 
-        // When user finishes typing in the box
         quantityTv.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                // User tapped away from the box — validate what they typed
                 String currentText = quantityTv.getText().toString().trim();
-                if (currentText.isEmpty() || Integer.parseInt(currentText) < 1) {
-                    // If empty or less than 1, reset to 1
+                if (currentText.isEmpty() ||
+                        Integer.parseInt(currentText) < 1) {
                     quantity = 1;
                     quantityTv.setText("1");
                 } else {
@@ -215,9 +211,9 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
         if (mode == null) mode = "add";
 
         if (mode.equals("edit")) {
-            String existingName = getIntent().getStringExtra("itemName");
-            String existingDesc = getIntent().getStringExtra("description");
-            String existingQty  = getIntent().getStringExtra("quantity");
+            String existingName  = getIntent().getStringExtra("itemName");
+            String existingDesc  = getIntent().getStringExtra("description");
+            String existingQty   = getIntent().getStringExtra("quantity");
             String existingImage = getIntent().getStringExtra("item_image");
             requestId = getIntent().getIntExtra("request_id", -1);
 
@@ -228,7 +224,6 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
                 quantityTv.setText(existingQty);
             }
 
-            // Load existing item image if available
             if (existingImage != null && !existingImage.isEmpty()
                     && !existingImage.equals("null")) {
                 uploadedImageUrl = existingImage;
@@ -295,11 +290,42 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
 
     private void uploadImageThenSave(FormBody.Builder formBuilder) {
         try {
-            java.io.InputStream inputStream = getContentResolver()
+            InputStream inputStream = getContentResolver()
                     .openInputStream(selectedImageUri);
-            byte[] imageBytes = new byte[inputStream.available()];
-            inputStream.read(imageBytes);
+
+            // Decode the bitmap
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             inputStream.close();
+
+            if (bitmap == null) {
+                saveBtn.setEnabled(true);
+                Toast.makeText(this,
+                        "Could not read image, please try again",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Resize to max 800px wide
+            int maxWidth = 800;
+            if (bitmap.getWidth() > maxWidth) {
+                float ratio = (float) maxWidth / bitmap.getWidth();
+                int newHeight = Math.round(bitmap.getHeight() * ratio);
+                bitmap = Bitmap.createScaledBitmap(
+                        bitmap, maxWidth, newHeight, true);
+            }
+
+            // Compress to JPEG at 70% quality
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteBuffer);
+            byte[] imageBytes = byteBuffer.toByteArray();
+
+            if (imageBytes.length == 0) {
+                saveBtn.setEnabled(true);
+                Toast.makeText(this,
+                        "Could not read image, please try again",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             MultipartBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)

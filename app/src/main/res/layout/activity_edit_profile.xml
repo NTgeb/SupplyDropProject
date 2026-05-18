@@ -192,29 +192,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="#88ffffff" />
 
-            <!-- Email -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/luckiest_guy"
-                android:paddingTop="16dp"
-                android:paddingBottom="4dp"
-                android:text="EMAIL"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/emailEt"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/edittext_background"
-                android:fontFamily="@font/luckiest_guy"
-                android:hint="example@email.com"
-                android:inputType="textEmailAddress"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textColor="@color/white"
-                android:textColorHint="#88ffffff" />
 
             <!-- Website -->
             <TextView
@@ -263,6 +240,32 @@
                 android:paddingEnd="12dp"
                 android:textColor="@color/white"
                 android:textColorHint="#88ffffff" />
+
+            <!-- city -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/luckiest_guy"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp"
+                android:text="CITY"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/cityEt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:fontFamily="@font/luckiest_guy"
+                android:hint="City"
+                android:inputType="text"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="#88ffffff" />
+
 
             <!-- Save Button -->
             <Button

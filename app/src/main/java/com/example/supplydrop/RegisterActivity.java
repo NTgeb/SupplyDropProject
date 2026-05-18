@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.txtusername);
         edtCell = findViewById(R.id.txtcellphone);
         edtAddress = findViewById(R.id.txtaddress);
-        edtCity = findViewById(R.id.txtaddress);
+        edtCity = findViewById(R.id.txtcity);
         btnEnter = findViewById(R.id.btnRegEnter);
 
         donorRecip.setOnCheckedChangeListener((group, checkedId) -> {
@@ -175,9 +175,20 @@ public class RegisterActivity extends AppCompatActivity {
                             fetchDonorAfterRegister(email);
                         }
                     } else {
-                        Toast.makeText(RegisterActivity.this,
-                                responseBody,
-                                Toast.LENGTH_SHORT).show();
+
+                        TextInputLayout txtInLUsername = findViewById(R.id.TextInputLayoutUsername);
+                        if(responseBody.contains("Username already taken. Please choose a different one.")){
+                            txtInLUsername.setError("Username already taken. Please choose a different one.");
+                            edtUsername.requestFocus();
+
+                        }
+                        else{
+                            txtInLUsername.setError(null);
+                            Toast.makeText(RegisterActivity.this,
+                                    responseBody,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
             }

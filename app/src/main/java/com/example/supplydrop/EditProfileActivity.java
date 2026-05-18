@@ -33,7 +33,7 @@ import okhttp3.Response;
 public class EditProfileActivity extends AppCompatActivity {
 
     EditText recipientNameEt, descriptionEt, phoneEt,
-            emailEt, websiteEt, addressEt;
+            cityEt, websiteEt, addressEt;
     ImageView profileImageView;
     Button changeImageBtn, saveProfileBtn;
     Uri selectedImageUri = null;
@@ -62,7 +62,7 @@ public class EditProfileActivity extends AppCompatActivity {
         recipientNameEt  = findViewById(R.id.recipientNameEt);
         descriptionEt    = findViewById(R.id.descriptionEt);
         phoneEt          = findViewById(R.id.phoneEt);
-        emailEt          = findViewById(R.id.emailEt);
+        cityEt          = findViewById(R.id.cityEt);
         websiteEt        = findViewById(R.id.websiteEt);
         addressEt        = findViewById(R.id.addressEt);
         profileImageView = findViewById(R.id.profileImageView);
@@ -114,8 +114,8 @@ public class EditProfileActivity extends AppCompatActivity {
                                     nullToEmpty(obj.optString("description")));
                             phoneEt.setText(
                                     nullToEmpty(obj.optString("cellphone")));
-                            emailEt.setText(
-                                    nullToEmpty(obj.optString("email")));
+                            cityEt.setText(
+                                    nullToEmpty(obj.optString("city")));
                             websiteEt.setText(
                                     nullToEmpty(obj.optString("website")));
                             addressEt.setText(
@@ -157,7 +157,7 @@ public class EditProfileActivity extends AppCompatActivity {
             String description = descriptionEt.getText()
                     .toString().trim();
             String phone       = phoneEt.getText().toString().trim();
-            String email       = emailEt.getText().toString().trim();
+            String city       = cityEt.getText().toString().trim();
             String website     = websiteEt.getText().toString().trim();
             String address     = addressEt.getText().toString().trim();
 
@@ -169,8 +169,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 phoneEt.setError("Please enter a phone number");
                 return;
             }
-            if (email.isEmpty()) {
-                emailEt.setError("Please enter an email");
+            if (city.isEmpty()) {
+                cityEt.setError("Please enter an city");
                 return;
             }
 
@@ -179,16 +179,16 @@ public class EditProfileActivity extends AppCompatActivity {
 
             if (selectedImageUri != null) {
                 uploadImageThenSave(name, description, phone,
-                        email, website, address);
+                        city, website, address);
             } else {
                 saveToDatabase(name, description, phone,
-                        email, website, address, uploadedImageUrl);
+                        city, website, address, uploadedImageUrl);
             }
         });
     }
 
     private void uploadImageThenSave(String name, String description,
-                                     String phone, String email,
+                                     String phone, String city,
                                      String website, String address) {
         try {
             java.io.InputStream inputStream = getContentResolver()
@@ -234,7 +234,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             if (obj.getBoolean("success")) {
                                 String imageUrl = obj.getString("image_url");
                                 saveToDatabase(name, description, phone,
-                                        email, website, address, imageUrl);
+                                        city, website, address, imageUrl);
                             } else {
                                 saveProfileBtn.setEnabled(true);
                                 Toast.makeText(EditProfileActivity.this,
@@ -260,7 +260,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void saveToDatabase(String name, String description,
-                                String phone, String email,
+                                String phone, String city,
                                 String website, String address,
                                 String imageUrl) {
         FormBody.Builder formBuilder = new FormBody.Builder()
@@ -268,7 +268,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .add("full_name",    name)
                 .add("description",  description)
                 .add("cellphone",    phone)
-                .add("email",        email)
+                .add("city",        city)
                 .add("website",      website)
                 .add("address",      address);
 
