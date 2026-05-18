@@ -15,17 +15,26 @@ public class DonorAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_donor_account, container, false);
 
-        LinearLayout donationHistoryRow = view.findViewById(R.id.donationHistoryRow);
-        LinearLayout logoutRow = view.findViewById(R.id.logoutRow);
+        LinearLayout donationHistoryRow  = view.findViewById(R.id.donationHistoryRow);
+        LinearLayout donationLeaderBoard = view.findViewById(R.id.donationLeaderBoard);
+        LinearLayout logoutRow           = view.findViewById(R.id.logoutRow);
 
         donationHistoryRow.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), DonationHistoryActivity.class);
+            Intent intent = new Intent(requireContext(),
+                    DonationHistoryActivity.class);
+            startActivity(intent);
+        });
+
+        donationLeaderBoard.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(),
+                    DonationLeaderboardActivity.class);
             startActivity(intent);
         });
 
         logoutRow.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 

@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SupplyDrop">
         <activity
+            android:name=".DonationLeaderboardActvity"
+            android:exported="false" />
+        <activity
             android:name=".RecipientActivity"
             android:exported="false" />
         <activity
@@ -39,7 +42,7 @@
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
