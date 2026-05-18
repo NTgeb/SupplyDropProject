@@ -31,7 +31,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
     Button clearBtn;
     LeaderboardAdapter adapter;
 
-    List<String[]> allDonors = new ArrayList<>();
+    List<String[]> allDonors      = new ArrayList<>();
     List<String[]> filteredDonors = new ArrayList<>();
 
     OkHttpClient client = new OkHttpClient();
@@ -46,6 +46,10 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
         usernameSearch      = findViewById(R.id.usernameSearch);
         clearBtn            = findViewById(R.id.clearBtn);
 
+        // Set up adapter first so it exists before data arrives
+        adapter = new LeaderboardAdapter(this, filteredDonors);
+        leaderboardListView.setAdapter(adapter);
+
         setupSearch();
         setupClearButton();
         fetchLeaderboard();
@@ -58,7 +62,8 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(DonationLeaderboardActivity.this,
                                 "Failed: " + e.getMessage(),
@@ -84,15 +89,15 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                                 JSONObject d = donors.getJSONObject(i);
                                 String position      = String.valueOf(i + 1);
                                 String username      = d.getString("username");
-                                String donationCount = d.getString("donation_count");
-
+                                String donationCount = d.getString(
+                                        "donation_count");
                                 allDonors.add(new String[]{
                                         position, username, donationCount
                                 });
                             }
 
                             filteredDonors.addAll(allDonors);
-                            setupList();
+                            adapter.updateData(filteredDonors);
 
                         } else {
                             Toast.makeText(DonationLeaderboardActivity.this,
@@ -107,11 +112,6 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    private void setupList() {
-        adapter = new LeaderboardAdapter(this, filteredDonors);
-        leaderboardListView.setAdapter(adapter);
     }
 
     private void setupSearch() {
@@ -132,7 +132,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
     private void applyFilter(String query) {
         filteredDonors.clear();
         if (query.isEmpty()) {
-            filteredDonors.addAll(allDonors);  // ← restore full list
+            filteredDonors.addAll(allDonors);
         } else {
             int position = 1;
             for (String[] donor : allDonors) {
@@ -144,14 +144,12 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                 }
             }
         }
-        if (adapter != null) {
-            adapter.updateData(filteredDonors);
-        }
+        adapter.updateData(filteredDonors);
     }
 
     private void setupClearButton() {
-        clearBtn.setOnClickListener(v -> {
-            usernameSearch.setText("");  // this triggers onTextChanged → applyFilter("")
-        });
+        clearBtn.setOnClickListener(v ->
+                usernameSearch.setText("")
+        );
     }
 }
