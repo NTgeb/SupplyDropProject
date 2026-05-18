@@ -3,17 +3,19 @@ package com.example.supplydrop;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 
@@ -32,12 +34,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+public class SingleRecipientActivity extends AppCompatActivity {
 
-public class SingleRecipientActivity extends AppCompatActivity
-{
-
-    TextView tvRecipientTitle, tvDescription, tvCategory,
-            tvQuantityNeeded;
+    TextView tvRecipientTitle, tvDescription, tvCategory, tvQuantityNeeded;
     EditText tvAmount;
     Button btnProfile, btnIncrease, btnDecrease, btnDonate;
     ImageView imgRecipient;
@@ -52,8 +51,7 @@ public class SingleRecipientActivity extends AppCompatActivity
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_recipient);
 
@@ -69,7 +67,8 @@ public class SingleRecipientActivity extends AppCompatActivity
         imgRecipient           = findViewById(R.id.imgRecipient);
         lvSimilarOpportunities = findViewById(R.id.lvSimilarOpportunities);
 
-        SharedPreferences prefs = getSharedPreferences("SupplyDropPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(
+                "SupplyDropPrefs", MODE_PRIVATE);
         donorId = prefs.getInt("donor_id", -1);
 
         requestId   = getIntent().getStringExtra("request_id");
@@ -77,70 +76,100 @@ public class SingleRecipientActivity extends AppCompatActivity
 
         tvAmount.setText(String.valueOf(donationAmount));
 
-        btnDecrease.setOnClickListener(v ->
-        {
+        // Watches every keystroke in the amount field.
+        // The instant the typed number exceeds availableQty
+        // the donate button goes grey and disabled.
+        // The instant it drops back to a valid number
+        // the donate button goes yellow and enabled again.
+        tvAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                String currentText = s.toString().trim();
+                if (currentText.isEmpty()) {
+                    donationAmount = 1;
+                } else {
+                    try {
+                        donationAmount = Integer.parseInt(currentText);
+                    } catch (NumberFormatException e) {
+                        donationAmount = 1;
+                    }
+                }
+                updateDonateButton();
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        btnDecrease.setOnClickListener(v -> {
             String currentText = tvAmount.getText().toString().trim();
-            if (!currentText.isEmpty())
-            {
+            if (!currentText.isEmpty()) {
                 donationAmount = Integer.parseInt(currentText);
             }
-            if (donationAmount > 1)
-            {
+            if (donationAmount > 1) {
                 donationAmount--;
                 tvAmount.setText(String.valueOf(donationAmount));
-            }
-            else
-            {
+                updateDonateButton();
+            } else {
                 Toast.makeText(this, "Minimum donation is 1",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
-        tvAmount.setOnFocusChangeListener((v, hasFocus) ->
-        {
-            if (!hasFocus)
-            {
+        tvAmount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
                 String currentText = tvAmount.getText().toString().trim();
-                try
-                {
-                    int typed;
-                    if (currentText.isEmpty())
-                    {
-                        typed = 0;
-                    }
-                    else
-                    {
-                        typed = Integer.parseInt(currentText);
-                    }
+                try {
+                    int typed = currentText.isEmpty() ? 0
+                            : Integer.parseInt(currentText);
                     if (typed < 1) {
                         donationAmount = 1;
                         tvAmount.setText(String.valueOf(1));
                         Toast.makeText(SingleRecipientActivity.this,
                                 "Minimum donation is 1",
                                 Toast.LENGTH_SHORT).show();
-                    }
-                    else if (availableQty > 0 && typed > availableQty)
-                    {
+                    } else if (availableQty > 0 && typed > availableQty) {
                         donationAmount = availableQty;
                         tvAmount.setText(String.valueOf(availableQty));
                         Toast.makeText(SingleRecipientActivity.this,
                                 "Maximum available is " + availableQty,
                                 Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
+                    } else {
                         donationAmount = typed;
                     }
-                }
-                catch (NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
                     donationAmount = 1;
                     tvAmount.setText(String.valueOf(1));
                 }
+                updateDonateButton();
             }
         });
 
         fetchRequestDetails();
+    }
+
+    // Checks donationAmount against availableQty.
+    // If amount exceeds available or available is 0:
+    //   - donate button disabled and greyed out
+    // If amount is valid:
+    //   - donate button enabled and yellow
+    private void updateDonateButton() {
+        if (availableQty <= 0 || donationAmount > availableQty) {
+            btnDonate.setEnabled(false);
+            btnDonate.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            android.graphics.Color.GRAY));
+        } else {
+            btnDonate.setEnabled(true);
+            btnDonate.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                    SingleRecipientActivity.this,
+                                    R.color.yellow)));
+        }
     }
 
     private void fetchRequestDetails() {
@@ -174,24 +203,18 @@ public class SingleRecipientActivity extends AppCompatActivity
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
                             String itemName    = obj.getString("item_name");
-                            String description = obj.optString(
-                                    "description", "");
+                            String description = obj.optString("description", "");
                             String quantity    = obj.getString("quantity");
                             String fullName    = obj.getString("full_name");
                             catName            = obj.getString("cat_name");
                             String catId       = obj.getString("cat_id");
-                            String itemImage   = obj.optString(
-                                    "item_image", "");
+                            String itemImage   = obj.optString("item_image", "");
 
-                            tvRecipientTitle.setText(itemName
-                                    + " — " + fullName);
-                            tvDescription.setText(
-                                    description.isEmpty()
-                                            ? "No description yet"
-                                            : description);
+                            tvRecipientTitle.setText(itemName + " — " + fullName);
+                            tvDescription.setText(description.isEmpty()
+                                    ? "No description yet" : description);
                             tvCategory.setText("Category: " + catName);
-                            tvQuantityNeeded.setText(
-                                    quantity + " remaining");
+                            tvQuantityNeeded.setText(quantity + " remaining");
 
                             if (!itemImage.isEmpty()
                                     && !itemImage.equals("null")) {
@@ -204,19 +227,14 @@ public class SingleRecipientActivity extends AppCompatActivity
                             int qty = Integer.parseInt(quantity);
                             availableQty = qty;
 
+                            // Now that availableQty is set, update the
+                            // button to its correct initial state
+                            updateDonateButton();
+
                             if (qty <= 0) {
-                                btnDonate.setEnabled(false);
-                                btnDonate.setBackgroundTintList(
-                                        android.content.res.ColorStateList
-                                                .valueOf(android.graphics.Color.GRAY));
                                 btnIncrease.setEnabled(false);
                             } else {
-                                btnDonate.setEnabled(true);
-                                btnDonate.setBackgroundTintList(
-                                        android.content.res.ColorStateList
-                                                .valueOf(getResources().getColor(
-                                                        R.color.yellow)));
-
+                                btnIncrease.setEnabled(true);
                                 btnIncrease.setOnClickListener(v -> {
                                     String currentText = tvAmount.getText()
                                             .toString().trim();
@@ -228,6 +246,7 @@ public class SingleRecipientActivity extends AppCompatActivity
                                         donationAmount++;
                                         tvAmount.setText(String.valueOf(
                                                 donationAmount));
+                                        updateDonateButton();
                                     } else {
                                         Toast.makeText(
                                                 SingleRecipientActivity.this,
@@ -248,8 +267,7 @@ public class SingleRecipientActivity extends AppCompatActivity
                             btnDonate.setOnClickListener(v ->
                                     recordDonation(requestId, catId));
 
-                            fetchSimilarRequests(requestId, catId,
-                                    recipientId);
+                            fetchSimilarRequests(requestId, catId, recipientId);
 
                         } else {
                             Toast.makeText(SingleRecipientActivity.this,
@@ -315,15 +333,13 @@ public class SingleRecipientActivity extends AppCompatActivity
                             }
 
                             if (similarList.isEmpty()) {
-                                similarList.add(
-                                        "No similar opportunities found");
+                                similarList.add("No similar opportunities found");
                             }
 
-                            ArrayAdapter<String> adapter =
-                                    new ArrayAdapter<>(
-                                            SingleRecipientActivity.this,
-                                            android.R.layout.simple_list_item_1,
-                                            similarList);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                    SingleRecipientActivity.this,
+                                    android.R.layout.simple_list_item_1,
+                                    similarList);
                             lvSimilarOpportunities.setAdapter(adapter);
 
                             lvSimilarOpportunities.setOnItemClickListener(
@@ -355,13 +371,11 @@ public class SingleRecipientActivity extends AppCompatActivity
             return;
         }
 
-        // Read whatever is currently typed before donating
         String currentText = tvAmount.getText().toString().trim();
         if (!currentText.isEmpty()) {
             donationAmount = Integer.parseInt(currentText);
         }
 
-        // Final cap check before sending
         if (availableQty > 0 && donationAmount > availableQty) {
             donationAmount = availableQty;
             tvAmount.setText(String.valueOf(availableQty));
