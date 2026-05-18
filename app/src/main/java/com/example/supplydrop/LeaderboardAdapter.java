@@ -4,27 +4,40 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class LeaderboardAdapter extends ArrayAdapter<String[]> {
+public class LeaderboardAdapter extends BaseAdapter {
 
     private final Context context;
     private List<String[]> data;
 
     public LeaderboardAdapter(Context context, List<String[]> data) {
-        super(context, 0, data);
         this.context = context;
         this.data = data;
     }
 
     public void updateData(List<String[]> newData) {
-        this.data = newData;
-        clear();
-        addAll(newData);
+        this.data.clear();
+        this.data.addAll(newData);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return data.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return data.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -36,8 +49,8 @@ public class LeaderboardAdapter extends ArrayAdapter<String[]> {
 
         String[] row = data.get(position);
 
-        TextView positionTv     = convertView.findViewById(R.id.positionTv);
-        TextView usernameTv     = convertView.findViewById(R.id.usernameTv);
+        TextView positionTv      = convertView.findViewById(R.id.positionTv);
+        TextView usernameTv      = convertView.findViewById(R.id.usernameTv);
         TextView donationCountTv = convertView.findViewById(R.id.donationCountTv);
 
         positionTv.setText(row[0]);
