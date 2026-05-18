@@ -258,7 +258,16 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            // Read quantity from field before saving in case user didn't tap away
+            String currentQtyText = quantityTv.getText().toString().trim();
+            if (!currentQtyText.isEmpty()) {
+                try {
+                    int typedQty = Integer.parseInt(currentQtyText);
+                    if (typedQty >= 1) quantity = typedQty;
+                } catch (NumberFormatException e) {
+                    quantity = 1;
+                }
+            }
             int spinnerIndex = categorySpinner.getSelectedItemPosition();
             selectedCatId = categoryIds.get(spinnerIndex);
 
