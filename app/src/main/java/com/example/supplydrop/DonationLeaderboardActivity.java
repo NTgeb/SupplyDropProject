@@ -1,10 +1,6 @@
 package com.example.supplydrop;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,12 +23,9 @@ import okhttp3.Response;
 public class DonationLeaderboardActivity extends AppCompatActivity {
 
     ListView leaderboardListView;
-    EditText usernameSearch;
-    Button clearBtn;
     LeaderboardAdapter adapter;
 
     List<String[]> allDonors = new ArrayList<>();
-    List<String[]> filteredDonors = new ArrayList<>();
 
     OkHttpClient client = new OkHttpClient();
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
@@ -43,11 +36,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_donation_leaderboard);
 
         leaderboardListView = findViewById(R.id.leaderboardListView);
-        usernameSearch      = findViewById(R.id.usernameSearch);
-        clearBtn            = findViewById(R.id.clearBtn);
 
-        setupSearch();
-        setupClearButton();
         fetchLeaderboard();
     }
 
@@ -58,7 +47,8 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(DonationLeaderboardActivity.this,
                                 "Failed: " + e.getMessage(),
@@ -78,21 +68,22 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                         if (obj.getBoolean("success")) {
                             JSONArray donors = obj.getJSONArray("donors");
                             allDonors.clear();
-                            filteredDonors.clear();
 
                             for (int i = 0; i < donors.length(); i++) {
                                 JSONObject d = donors.getJSONObject(i);
                                 String position      = String.valueOf(i + 1);
                                 String username      = d.getString("username");
-                                String donationCount = d.getString("donation_count");
-
+                                String donationCount = d.getString(
+                                        "donation_count");
                                 allDonors.add(new String[]{
                                         position, username, donationCount
                                 });
                             }
 
-                            filteredDonors.addAll(allDonors);
-                            setupList();
+                            adapter = new LeaderboardAdapter(
+                                    DonationLeaderboardActivity.this,
+                                    allDonors);
+                            leaderboardListView.setAdapter(adapter);
 
                         } else {
                             Toast.makeText(DonationLeaderboardActivity.this,
@@ -106,49 +97,6 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
-    }
-
-    private void setupList() {
-        adapter = new LeaderboardAdapter(this, filteredDonors);
-        leaderboardListView.setAdapter(adapter);
-    }
-
-    private void setupSearch() {
-        usernameSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                applyFilter(s.toString().trim().toLowerCase());
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-    }
-
-    private void applyFilter(String query) {
-        filteredDonors.clear();
-        int position = 1;
-        for (String[] donor : allDonors) {
-            if (query.isEmpty() || donor[1].toLowerCase().contains(query)) {
-                filteredDonors.add(new String[]{
-                        String.valueOf(position), donor[1], donor[2]
-                });
-                position++;
-            }
-        }
-        if (adapter != null) {
-            adapter.updateData(filteredDonors);
-        }
-    }
-
-    private void setupClearButton() {
-        clearBtn.setOnClickListener(v -> {
-            usernameSearch.setText("");
-            applyFilter("");
         });
     }
 }
