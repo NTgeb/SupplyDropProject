@@ -3,9 +3,7 @@ package com.example.supplydrop;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -38,7 +36,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     Button btnEnter;
     RadioGroup donorRecip;
-    TextInputEditText edtName, edtEmail, edtUsername, edtCell, edtAddress, edtCity, edtPassword;
+    TextInputEditText edtName, edtEmail, edtUsername, edtCell,
+            edtAddress, edtCity, edtPassword;
     String userType, name, email, password, username, cell, address, city;
 
     Validator val = new Validator();
@@ -56,15 +55,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         client = new OkHttpClient();
-        donorRecip = findViewById(R.id.rgbDonorRecip);
-        edtName = findViewById(R.id.txtfName);
-        edtEmail = findViewById(R.id.txtemail);
+        donorRecip  = findViewById(R.id.rgbDonorRecip);
+        edtName     = findViewById(R.id.txtfName);
+        edtEmail    = findViewById(R.id.txtemail);
         edtPassword = findViewById(R.id.txtpassword);
         edtUsername = findViewById(R.id.txtusername);
-        edtCell = findViewById(R.id.txtcellphone);
-        edtAddress = findViewById(R.id.txtaddress);
-        edtCity = findViewById(R.id.txtcity);
-        btnEnter = findViewById(R.id.btnRegEnter);
+        edtCell     = findViewById(R.id.txtcellphone);
+        edtAddress  = findViewById(R.id.txtaddress);
+        edtCity     = findViewById(R.id.txtcity);
+        btnEnter    = findViewById(R.id.btnRegEnter);
 
         donorRecip.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton selection = findViewById(checkedId);
@@ -72,59 +71,55 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         btnEnter.setOnClickListener(v -> {
-            name = edtName.getText() != null ? edtName.getText().toString().trim(): "";
-            email = edtEmail.getText() != null ? edtEmail.getText().toString().trim(): "";
-            password = edtPassword.getText() != null ? edtPassword.getText().toString().trim(): "";
-            username = edtUsername.getText() != null ? edtUsername.getText().toString().trim(): "";
-            cell = edtCell.getText() != null ? edtCell.getText().toString().trim(): "";
-            address = edtAddress.getText() != null ? edtAddress.getText().toString().trim(): "";
-            city = edtCity.getText() != null ? edtCity.getText().toString().trim(): "";
+            name     = edtName.getText()     != null ? edtName.getText().toString().trim()     : "";
+            email    = edtEmail.getText()    != null ? edtEmail.getText().toString().trim()    : "";
+            password = edtPassword.getText() != null ? edtPassword.getText().toString().trim() : "";
+            username = edtUsername.getText() != null ? edtUsername.getText().toString().trim() : "";
+            cell     = edtCell.getText()     != null ? edtCell.getText().toString().trim()     : "";
+            address  = edtAddress.getText()  != null ? edtAddress.getText().toString().trim()  : "";
+            city     = edtCity.getText()     != null ? edtCity.getText().toString().trim()     : "";
 
             if (userType == null || userType.isEmpty()) {
                 Toast.makeText(this, "Please select Donor or Recipient",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            //Empty Fields
-            boolean bEmpty = val.empty(name) || val.empty(email) || val.empty(password) ||
-                            val.empty(username) || val.empty(cell) || val.empty(address)
-                            || val.empty(city);
+
+            boolean bEmpty = val.empty(name) || val.empty(email) ||
+                    val.empty(password) || val.empty(username) ||
+                    val.empty(cell) || val.empty(address) || val.empty(city);
             if (bEmpty) {
                 Toast.makeText(this, "Please fill in all fields",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            //Valid email check
+
             TextInputLayout txtInLEmail = findViewById(R.id.TextInputLayoutEmail);
-            if(!val.email(email)){
+            if (!val.email(email)) {
                 txtInLEmail.setError("Please enter a valid email");
                 edtEmail.requestFocus();
                 return;
-            }
-            else{
+            } else {
                 txtInLEmail.setError(null);
             }
-            //Password Length
+
             TextInputLayout txtInLPassword = findViewById(R.id.TextInputLayoutPassword);
-            if(!val.password(password)){
+            if (!val.password(password)) {
                 txtInLPassword.setError("Password must be between 8-30 characters");
                 edtPassword.requestFocus();
                 return;
-            }
-            else{
+            } else {
                 txtInLPassword.setError(null);
             }
-            //Valid Cellphone
+
             TextInputLayout txtInLCell = findViewById(R.id.TextInputLayoutCellphone);
-            if(!val.phone(cell)){
+            if (!val.phone(cell)) {
                 txtInLCell.setError("Please enter a valid cellphone number");
                 edtCell.requestFocus();
                 return;
-            }
-            else{
+            } else {
                 txtInLCell.setError(null);
             }
-
 
             postRegister(userType, name, email, password,
                     username, cell, address, city);
@@ -136,14 +131,14 @@ public class RegisterActivity extends AppCompatActivity {
                              String address, String city) {
 
         RequestBody requestBody = new FormBody.Builder()
-                .add("userType", userType)
-                .add("email", email)
-                .add("password", password)
-                .add("fname", name)
-                .add("username", username)
-                .add("cellphone", cell)
-                .add("address", address)
-                .add("city", city)
+                .add("userType",   userType)
+                .add("email",      email)
+                .add("password",   password)
+                .add("fname",      name)
+                .add("username",   username)
+                .add("cellphone",  cell)
+                .add("address",    address)
+                .add("city",       city)
                 .build();
 
         Request request = new Request.Builder()
@@ -153,7 +148,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(RegisterActivity.this,
                                 "Connection failed",
@@ -163,32 +159,37 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String responseBody = response.body().string();
                 runOnUiThread(() -> {
                     if (responseBody.contains("successfully")) {
                         if (userType.equals("Recipient")) {
-                            // Fetch recipient profile to store in SharedPreferences
                             fetchRecipientAfterRegister(email);
                         } else {
-                            // Donors fetch donor profile then go to DonorActivity
                             fetchDonorAfterRegister(email);
                         }
                     } else {
+                        TextInputLayout txtInLUsername =
+                                findViewById(R.id.TextInputLayoutUsername);
+                        TextInputLayout txtInLEmail =
+                                findViewById(R.id.TextInputLayoutEmail);
 
-                        TextInputLayout txtInLUsername = findViewById(R.id.TextInputLayoutUsername);
-                        if(responseBody.contains("Username already taken. Please choose a different one.")){
+                        if (responseBody.contains("Username already taken")) {
                             txtInLUsername.setError("Username already taken. Please choose a different one.");
+                            txtInLEmail.setError(null);
                             edtUsername.requestFocus();
-
-                        }
-                        else{
+                        } else if (responseBody.contains("email already exists")) {
+                            txtInLEmail.setError("An account with this email already exists.");
                             txtInLUsername.setError(null);
+                            edtEmail.requestFocus();
+                        } else {
+                            txtInLUsername.setError(null);
+                            txtInLEmail.setError(null);
                             Toast.makeText(RegisterActivity.this,
                                     responseBody,
                                     Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
             }
@@ -206,7 +207,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(RegisterActivity.this,
                                 "Registered but failed to load profile",
@@ -216,7 +218,8 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String responseBody = response.body().string();
                 runOnUiThread(() -> {
                     try {
@@ -259,7 +262,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call,
+                                  @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(RegisterActivity.this,
                                 "Registered but failed to load profile",
@@ -269,7 +273,8 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call,
-                                   @NonNull Response response) throws IOException {
+                                   @NonNull Response response)
+                    throws IOException {
                 final String responseBody = response.body().string();
                 runOnUiThread(() -> {
                     try {
