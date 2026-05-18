@@ -1,5 +1,6 @@
 package com.example.supplydrop;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -110,9 +111,6 @@ public class RecipientDashboardFragment extends Fragment {
                                 String itemImage   = d.optString(
                                         "item_image", "");
 
-                                // { itemName, catName, quantity,
-                                //   requestId, description,
-                                //   catId, itemImage }
                                 allRequests.add(new String[]{
                                         itemName, catName,
                                         quantity, requestId,
@@ -185,7 +183,15 @@ public class RecipientDashboardFragment extends Fragment {
             }
             String itemName  = adapter.getSelectedItem()[0];
             String requestId = adapter.getSelectedItem()[3];
-            deleteRequest(requestId, itemName);
+
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Remove Request")
+                    .setMessage("Are you sure you want to remove \""
+                            + itemName + "\"? This cannot be undone.")
+                    .setPositiveButton("Remove", (dialog, which) ->
+                            deleteRequest(requestId, itemName))
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
     }
 

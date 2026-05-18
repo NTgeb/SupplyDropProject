@@ -194,16 +194,13 @@
 
                 <Button
                     android:id="@+id/decreaseQtyBtn"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/lblue"
+                    android:padding="0dp"
                     android:text="-"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/luckiest_guy"
                     android:textColor="@color/white"
-                    android:background="@color/lblue"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    app:backgroundTint="@null"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/quantityTv"
@@ -222,16 +219,13 @@
 
                 <Button
                     android:id="@+id/increaseQtyBtn"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/lblue"
+                    android:padding="0dp"
                     android:text="+"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/luckiest_guy"
                     android:textColor="@color/white"
-                    android:background="@color/lblue"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    app:backgroundTint="@null"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
