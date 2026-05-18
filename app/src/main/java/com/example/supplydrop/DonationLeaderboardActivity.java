@@ -61,8 +61,8 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(DonationLeaderboardActivity.this,
-                                "Failed to load leaderboard",
-                                Toast.LENGTH_SHORT).show()
+                                "Failed: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show()
                 );
             }
 
@@ -70,6 +70,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call call,
                                    @NonNull Response response)
                     throws IOException {
+                if (response.body() == null) return;
                 final String body = response.body().string();
                 runOnUiThread(() -> {
                     try {
@@ -83,8 +84,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                                 JSONObject d = donors.getJSONObject(i);
                                 String position      = String.valueOf(i + 1);
                                 String username      = d.getString("username");
-                                String donationCount = d.getString(
-                                        "donation_count");
+                                String donationCount = d.getString("donation_count");
 
                                 allDonors.add(new String[]{
                                         position, username, donationCount
@@ -102,7 +102,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Toast.makeText(DonationLeaderboardActivity.this,
                                 "Error: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -134,7 +134,6 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
         int position = 1;
         for (String[] donor : allDonors) {
             if (query.isEmpty() || donor[1].toLowerCase().contains(query)) {
-                // Re-number positions based on filtered results
                 filteredDonors.add(new String[]{
                         String.valueOf(position), donor[1], donor[2]
                 });
@@ -149,6 +148,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
     private void setupClearButton() {
         clearBtn.setOnClickListener(v -> {
             usernameSearch.setText("");
+            applyFilter("");
         });
     }
 }
