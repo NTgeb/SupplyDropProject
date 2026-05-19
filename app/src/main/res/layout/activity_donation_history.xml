@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/login_background">
 
-    <!-- Title -->
+
     <TextView
         android:id="@+id/appTitleLbl"
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Divider -->
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Table Header -->
+
     <LinearLayout
         android:id="@+id/tableHeader"
         android:layout_width="match_parent"
@@ -92,7 +92,6 @@
 
     </LinearLayout>
 
-    <!-- Donation History List -->
     <ListView
         android:id="@+id/donationHistoryListView"
         android:layout_width="match_parent"

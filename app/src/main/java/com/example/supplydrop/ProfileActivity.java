@@ -26,14 +26,11 @@ import okhttp3.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextView tvRecipientName, tvProfileDescription, tvWebsite,
-            tvAddress, tvPhone, tvEmail;
+    TextView tvRecipientName, tvProfileDescription, tvWebsite, tvAddress, tvPhone, tvEmail;
     ImageView imgProfileLogo;
     Button btnViewOtherDonations;
-
     OkHttpClient client = new OkHttpClient();
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
-
     String recipientId;
     String recipientName;
 
@@ -42,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //Assigning the variables to the respective objects
         tvRecipientName      = findViewById(R.id.tvRecipientName);
         tvProfileDescription = findViewById(R.id.tvProfileDescription);
         tvWebsite            = findViewById(R.id.tvWebsite);
@@ -71,9 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call,
                                   @NonNull IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(ProfileActivity.this,
-                                "Failed to load profile",
-                                Toast.LENGTH_SHORT).show()
+                        Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show()
                 );
             }
 
@@ -85,7 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     try {
                         JSONObject obj = new JSONObject(body);
-                        if (obj.getBoolean("success")) {
+                        if (obj.getBoolean("success")) {//Assign the varibales with the JSON obj
                             recipientName      = obj.getString("full_name");
                             String phone       = obj.optString("cellphone", "");
                             String email       = obj.optString("email", "");
@@ -98,21 +94,16 @@ public class ProfileActivity extends AppCompatActivity {
 
                             tvRecipientName.setText(nullToEmpty(recipientName));
 
-                            tvProfileDescription.setText(
-                                    nullToEmpty(description).isEmpty()
-                                            ? "No description provided"
-                                            : nullToEmpty(description));
+                            //Handle empty fields
+                            tvProfileDescription.setText(nullToEmpty(description).isEmpty() ? "No description provided" : nullToEmpty(description));
 
-                            tvPhone.setText(nullToEmpty(phone).isEmpty()
-                                    ? "📞  No phone provided"
-                                    : "📞  " + nullToEmpty(phone));
+                            tvPhone.setText(nullToEmpty(phone).isEmpty() ? "📞  No phone provided" : "📞  " + nullToEmpty(phone));
 
-                            tvEmail.setText(nullToEmpty(email).isEmpty()
-                                    ? "✉  No email provided"
-                                    : "✉  " + nullToEmpty(email));
+                            tvEmail.setText(nullToEmpty(email).isEmpty() ? "✉  No email provided" : "✉  " + nullToEmpty(email));
 
                             String cleanAddress = nullToEmpty(address);
                             String cleanCity    = nullToEmpty(city);
+
                             if (cleanAddress.isEmpty() && cleanCity.isEmpty()) {
                                 tvAddress.setText("No address provided");
                             } else if (cleanCity.isEmpty()) {
@@ -126,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     ? "No website provided"
                                     : cleanWebsite);
 
-                            // Load profile image using Glide
+                            //Load profile image using Glide
                             if (!profileImage.isEmpty()
                                     && !profileImage.equals("null")) {
                                 Glide.with(ProfileActivity.this)
@@ -135,10 +126,8 @@ public class ProfileActivity extends AppCompatActivity {
                                         .into(imgProfileLogo);
                             }
 
-                            btnViewOtherDonations.setOnClickListener(v -> {
-                                Intent intent = new Intent(
-                                        ProfileActivity.this,
-                                        DonorActivity.class);
+                            btnViewOtherDonations.setOnClickListener(v -> {//Calls the Donor acitivty and sends the name in the search filter
+                                Intent intent = new Intent(ProfileActivity.this, DonorActivity.class);
                                 intent.putExtra("filter_recipient",
                                         recipientName);
                                 intent.setFlags(
@@ -160,7 +149,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-    private String nullToEmpty(String value) {
+    private String nullToEmpty(String value) {//Converts strings to empty incase null returned
         if (value == null || value.equals("null")) return "";
         return value;
     }

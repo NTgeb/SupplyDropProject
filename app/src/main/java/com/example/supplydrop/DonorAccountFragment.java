@@ -31,16 +31,17 @@ public class DonorAccountFragment extends Fragment {
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_donor_account,
                 container, false);
 
+        //Creates the Linear Layouts to track which one gets clicked
         LinearLayout donationHistoryRow = view.findViewById(R.id.donationHistoryRow);
         LinearLayout donationLeaderBoard = view.findViewById(R.id.donationLeaderBoard);
         LinearLayout logoutRow = view.findViewById(R.id.logoutRow);
         LinearLayout deleteAccountRow    = view.findViewById(R.id.deleteAccountRow);
 
+        //Set click listeners that should open the respective activities
         donationHistoryRow.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), DonationHistoryActivity.class);
             startActivity(intent);
@@ -59,7 +60,7 @@ public class DonorAccountFragment extends Fragment {
         });
 
         deleteAccountRow.setOnClickListener(v -> {
-            // Show confirmation dialog first
+            // Show confirmation dialog before deleteing the acc
             new AlertDialog.Builder(requireContext())
                     .setTitle("Delete Account")
                     .setMessage("Are you sure you want to delete your account? This cannot be undone.")
@@ -74,23 +75,16 @@ public class DonorAccountFragment extends Fragment {
     }
 
     private void deleteAccount() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(
-                "SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
+        //Get the data from the local storage
+        SharedPreferences prefs = requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
         int donorId = prefs.getInt("donor_id", -1);
-
-        if (donorId == -1) {
-            Toast.makeText(requireContext(),
-                    "Error: donor not found",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("donor_id", String.valueOf(donorId))
                 .build();
 
         Request request = new Request.Builder()
-                .url(baseUrl + "delete_donor_account.php")
+                .url(baseUrl + "delete_donor_account.php")//Delete the user php
                 .post(requestBody)
                 .build();
 
@@ -116,25 +110,18 @@ public class DonorAccountFragment extends Fragment {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
                             // Clear SharedPreferences
-                            requireContext().getSharedPreferences(
-                                            "SupplyDropPrefs",
-                                            android.content.Context.MODE_PRIVATE)
-                                    .edit().clear().apply();
+                            requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
 
-                            Toast.makeText(requireContext(),
-                                    "Account deleted",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Account deleted",Toast.LENGTH_SHORT).show();
 
-                            // Go back to login
+                            // Go back to login once deleted
                             Intent intent = new Intent(requireContext(),
                                     MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(requireContext(),
-                                    obj.getString("message"),
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         Toast.makeText(requireContext(),

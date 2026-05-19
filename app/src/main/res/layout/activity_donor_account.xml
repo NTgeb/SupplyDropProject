@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/login_background">
 
-    <!-- Title -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,13 +29,13 @@
         android:paddingStart="16dp"
         android:paddingBottom="12dp"/>
 
-    <!-- Divider -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#44ffffff"/>
 
-    <!-- Donation History Row -->
+
     <LinearLayout
         android:id="@+id/donationHistoryRow"
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
         android:layout_height="1dp"
         android:background="#44ffffff"/>
 
-    <!-- Donation History Row -->
+
     <LinearLayout
         android:id="@+id/donationLeaderBoard"
         android:layout_width="match_parent"
@@ -96,13 +96,13 @@
 
     </LinearLayout>
 
-    <!-- Divider -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#44ffffff"/>
 
-    <!-- Logout Row -->
+
     <LinearLayout
         android:id="@+id/logoutRow"
         android:layout_width="match_parent"
@@ -124,19 +124,19 @@
 
     </LinearLayout>
 
-    <!-- Divider -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#44ffffff"/>
 
-    <!-- Divider -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#44ffffff"/>
 
-    <!-- Delete Account Row -->
+
     <LinearLayout
         android:id="@+id/deleteAccountRow"
         android:layout_width="match_parent"
@@ -157,7 +157,7 @@
 
     </LinearLayout>
 
-    <!-- Divider -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
