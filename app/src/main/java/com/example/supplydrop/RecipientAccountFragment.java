@@ -74,13 +74,8 @@ public class RecipientAccountFragment extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
         int recipientId = prefs.getInt("recipient_id", -1);
 
-        if (recipientId == -1) // if ID is not there default is -1, that is why i did that
-        {
-            Toast.makeText(requireContext(), "Error: recipient not found", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        RequestBody requestBody = new FormBody.Builder().add("recipient_id", String.valueOf(recipientId)).build(); //sends recip to PHP
+        RequestBody requestBody = new FormBody.Builder().add("recipient_id", String.valueOf(recipientId)).build(); //sends recipId to PHP
 
         Request request = new Request.Builder().url(baseUrl + "delete_recipient_account.php").post(requestBody).build(); // PHP requestto delete_recip_acc PHP file
 

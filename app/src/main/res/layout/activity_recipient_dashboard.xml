@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/login_background">
 
-    <!-- Top Bar -->
     <TextView
         android:id="@+id/appTitleLbl"
         android:layout_width="match_parent"
@@ -24,7 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Divider -->
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -34,7 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Action Buttons -->
     <Button
         android:id="@+id/addBtn"
         android:layout_width="0dp"
@@ -97,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toEndOf="@id/editBtn"
         app:layout_constraintEnd_toEndOf="parent"/>
-    <!-- Table Header -->
+
     <LinearLayout
         android:id="@+id/tableHeader"
         android:layout_width="match_parent"
@@ -142,7 +139,6 @@
 
     </LinearLayout>
 
-    <!-- Donation Requests Table -->
     <ListView
         android:id="@+id/donationRequestsListView"
         android:layout_width="match_parent"

@@ -11,7 +11,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- TOP SECTION: Title + Image -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,14 +39,12 @@
 
         </LinearLayout>
 
-        <!-- MIDDLE SECTION: Description + Profile/Amount/Donate -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:orientation="horizontal">
 
-            <!-- Description Box -->
             <TextView
                 android:id="@+id/tvDescription"
                 android:layout_width="0dp"
@@ -60,16 +57,13 @@
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-            <!-- Right Column: Profile, Amount, Donate -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <!-- Profile Button -->
 
-                <!-- Amount Controls -->
                 <Button
                     android:id="@+id/btnProfile"
                     android:layout_width="120dp"
@@ -135,7 +129,6 @@
 
                 </LinearLayout>
 
-                <!-- Donate Button -->
                 <Button
                     android:id="@+id/btnDonate"
                     android:layout_width="120dp"
@@ -150,7 +143,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- CATEGORY -->
         <TextView
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"
@@ -163,7 +155,6 @@
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
 
-        <!-- QUANTITY NEEDED -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -192,7 +183,6 @@
 
         </LinearLayout>
 
-        <!-- SIMILAR OPPORTUNITIES -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
