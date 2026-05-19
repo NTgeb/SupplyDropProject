@@ -31,33 +31,36 @@ public class RecipientAccountFragment extends Fragment {
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_recipient_account,
-                container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.activity_recipient_account,container, false);
 
-        LinearLayout editProfileRow   = view.findViewById(R.id.editProfileRow);
-        LinearLayout logoutRow        = view.findViewById(R.id.logoutRow);
+        LinearLayout editProfileRow = view.findViewById(R.id.editProfileRow);
+        LinearLayout logoutRow = view.findViewById(R.id.logoutRow);
         LinearLayout deleteAccountRow = view.findViewById(R.id.deleteAccountRow);
 
-        editProfileRow.setOnClickListener(v -> {
+        editProfileRow.setOnClickListener(v ->
+        {
             Intent intent = new Intent(requireContext(),
                     EditProfileActivity.class);
             startActivity(intent);
         });
 
-        logoutRow.setOnClickListener(v -> {
+        logoutRow.setOnClickListener(v ->
+        {
             Intent intent = new Intent(requireContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 
-        deleteAccountRow.setOnClickListener(v -> {
+        deleteAccountRow.setOnClickListener(v ->
+        {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Delete Account")
                     .setMessage("Are you sure you want to delete your account? This cannot be undone.")
-                    .setPositiveButton("Delete", (dialog, which) -> {
+                    .setPositiveButton("Delete", (dialog, which) ->
+                    {
                         deleteAccount();
                     })
                     .setNegativeButton("Cancel", null)
@@ -67,37 +70,33 @@ public class RecipientAccountFragment extends Fragment {
         return view;
     }
 
-    private void deleteAccount() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(
-                "SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
+    private void deleteAccount()
+    {
+        SharedPreferences prefs = requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
         int recipientId = prefs.getInt("recipient_id", -1);
 
-        if (recipientId == -1) {
+        if (recipientId == -1)
+        {
             Toast.makeText(requireContext(),
                     "Error: recipient not found",
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RequestBody requestBody = new FormBody.Builder()
-                .add("recipient_id", String.valueOf(recipientId))
-                .build();
+        RequestBody requestBody = new FormBody.Builder().add("recipient_id", String.valueOf(recipientId)).build();
 
-        Request request = new Request.Builder()
-                .url(baseUrl + "delete_recipient_account.php")
-                .post(requestBody)
-                .build();
+        Request request = new Request.Builder().url(baseUrl + "delete_recipient_account.php").post(requestBody).build();
 
-        client.newCall(request).enqueue(new Callback() {
+        client.newCall(request).enqueue(new Callback()
+        {
             @Override
-            public void onFailure(@NonNull Call call,
-                                  @NonNull IOException e) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(),
-                                "Connection failed",
-                                Toast.LENGTH_SHORT).show()
-                );
+            public void onFailure(@NonNull Call call, @NonNull IOException e)
+            {
+                if (getActivity() == null)
+                {
+                    return;
+                }
+                getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Connection failed", Toast.LENGTH_SHORT).show());
             }
 
             @Override
