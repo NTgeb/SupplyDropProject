@@ -39,7 +39,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Logo + Description -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -154,7 +153,6 @@
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-            <!-- Fixed button — match_parent instead of hardcoded width -->
             <Button
                 android:id="@+id/btnViewOtherDonations"
                 android:layout_width="match_parent"
