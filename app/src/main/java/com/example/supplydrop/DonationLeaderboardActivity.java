@@ -35,9 +35,9 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donation_leaderboard);
 
-        leaderboardListView = findViewById(R.id.leaderboardListView);
+        leaderboardListView = findViewById(R.id.leaderboardListView);//Getting our view
 
-        fetchLeaderboard();
+        fetchLeaderboard();//Populating the leaderboards
     }
 
     private void fetchLeaderboard() {
@@ -50,9 +50,7 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call,
                                   @NonNull IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(DonationLeaderboardActivity.this,
-                                "Failed: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show()
+                        Toast.makeText(DonationLeaderboardActivity.this, "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
             }
 
@@ -60,40 +58,33 @@ public class DonationLeaderboardActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call call,
                                    @NonNull Response response)
                     throws IOException {
-                if (response.body() == null) return;
                 final String body = response.body().string();
                 runOnUiThread(() -> {
                     try {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
                             JSONArray donors = obj.getJSONArray("donors");
+                            //Clear any previous list
                             allDonors.clear();
 
-                            for (int i = 0; i < donors.length(); i++) {
+                            for (int i = 0; i < donors.length(); i++) {//Populate the data with JSON objs
                                 JSONObject d = donors.getJSONObject(i);
-                                String position      = String.valueOf(i + 1);
-                                String username      = d.getString("username");
-                                String donationCount = d.getString(
-                                        "donation_count");
-                                allDonors.add(new String[]{
+                                String position = String.valueOf(i + 1);
+                                String username = d.getString("username");
+                                String donationCount = d.getString("donation_count");
+                                allDonors.add(new String[]{//Add them to list
                                         position, username, donationCount
                                 });
                             }
 
-                            adapter = new LeaderboardAdapter(
-                                    DonationLeaderboardActivity.this,
-                                    allDonors);
+                            adapter = new LeaderboardAdapter(DonationLeaderboardActivity.this, allDonors);
                             leaderboardListView.setAdapter(adapter);
 
                         } else {
-                            Toast.makeText(DonationLeaderboardActivity.this,
-                                    "No data found",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DonationLeaderboardActivity.this, "No data found", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
-                        Toast.makeText(DonationLeaderboardActivity.this,
-                                "Error: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(DonationLeaderboardActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }

@@ -87,9 +87,9 @@ public class DonationHistoryActivity extends AppCompatActivity {
 
                             for (int i = 0; i < donations.length(); i++) {//Populate our JSON Objects
                                 JSONObject d = donations.getJSONObject(i);
-                                String orgName    = d.getString("full_name");
-                                String itemName   = d.getString("item_name");
-                                String qty        = d.getString("quantity_donated");
+                                String orgName = d.getString("full_name");
+                                String itemName = d.getString("item_name");
+                                String qty = d.getString("quantity_donated");
                                 String requestId  = d.getString("request_id");
                                 String recipientId = d.getString("recipient_id");
 
