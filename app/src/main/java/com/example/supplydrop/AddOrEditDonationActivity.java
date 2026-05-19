@@ -59,12 +59,9 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
     int recipientId = -1;
     int requestId = -1;
 
-    String getCategoriesUrl =
-            "https://wmc.ms.wits.ac.za/students/sgroup2711/get_categories.php";
-    String saveDonationUrl =
-            "https://wmc.ms.wits.ac.za/students/sgroup2711/save_donation.php";
-    String uploadImageUrl =
-            "https://wmc.ms.wits.ac.za/students/sgroup2711/upload_image.php";
+    String getCategoriesUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/get_categories.php";
+    String saveDonationUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/save_donation.php";
+    String uploadImageUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/upload_image.php";
 
     ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> // this handles the imagegallery
     {
