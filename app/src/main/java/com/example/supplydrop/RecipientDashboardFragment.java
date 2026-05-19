@@ -81,10 +81,6 @@ public class RecipientDashboardFragment extends Fragment {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
                 final String body = response.body().string();
-                if (getActivity() == null)
-                {
-                    return;
-                }
                 getActivity().runOnUiThread(() ->
                 {
                     try
