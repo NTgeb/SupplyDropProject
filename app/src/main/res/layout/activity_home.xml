@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/login_background">
 
-    <!-- Top Bar -->
     <TextView
         android:id="@+id/appTitleLbl"
         android:layout_width="0dp"
@@ -47,7 +46,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Filter container holding all 4 filters -->
     <LinearLayout
         android:id="@+id/filterContainer"
         android:layout_width="0dp"
@@ -60,7 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/clearBtn">
 
-        <!-- Row 1: Category + Area -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -94,7 +91,7 @@
 
         </LinearLayout>
 
-        <!-- Row 2: Item + Recipient search -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -137,7 +134,7 @@
 
     </LinearLayout>
 
-    <!-- Clear button spans full height of filter container -->
+
     <Button
         android:id="@+id/clearBtn"
         android:layout_width="wrap_content"
@@ -159,7 +156,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/filterContainer"/>
 
-    <!-- Table Header -->
+
     <LinearLayout
         android:id="@+id/tableHeader"
         android:layout_width="match_parent"
