@@ -41,20 +41,17 @@ public class RecipientDashboardFragment extends Fragment {
     int recipientId;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_recipient_dashboard,
-                container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.activity_recipient_dashboard, container, false);
 
-        addBtn    = view.findViewById(R.id.addBtn);
-        editBtn   = view.findViewById(R.id.editBtn);
+        addBtn = view.findViewById(R.id.addBtn);  //connects these buttons with xml buttons
+        editBtn = view.findViewById(R.id.editBtn);
         removeBtn = view.findViewById(R.id.removeBtn);
-        donationRequestsListView = view.findViewById(
-                R.id.donationRequestsListView);
+        donationRequestsListView = view.findViewById(R.id.donationRequestsListView);
 
-        SharedPreferences prefs = requireContext().getSharedPreferences(
-                "SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
-        recipientId = prefs.getInt("recipient_id", -1);
+        SharedPreferences prefs = requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
+        recipientId = prefs.getInt("recipient_id", -1); //reads in user id of person who is logged in
 
         setupList();
         setupButtons();
@@ -63,106 +60,101 @@ public class RecipientDashboardFragment extends Fragment {
         return view;
     }
 
-    private void fetchDonationRequests() {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("recipient_id", String.valueOf(recipientId))
-                .build();
+    private void fetchDonationRequests() ///loads donation reqst from php
+    {
+        RequestBody requestBody = new FormBody.Builder().add("recipient_id", String.valueOf(recipientId)).build();
 
-        Request request = new Request.Builder()
-                .url(baseUrl + "get_donations.php")
-                .post(requestBody)
-                .build();
+        Request request = new Request.Builder().url(baseUrl + "get_donations.php").post(requestBody).build();
 
-        client.newCall(request).enqueue(new Callback() {
+        client.newCall(request).enqueue(new Callback()
+        {
             @Override
-            public void onFailure(@NonNull Call call,
-                                  @NonNull IOException e) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(),
-                                "Failed to load requests",
-                                Toast.LENGTH_SHORT).show()
-                );
+            public void onFailure(@NonNull Call call, @NonNull IOException e) { // if the internet fails or something
+                if (getActivity() == null)
+                {
+                    return;
+                }
+                getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Failed to load requests", Toast.LENGTH_SHORT).show());
             }
 
             @Override
-            public void onResponse(@NonNull Call call,
-                                   @NonNull Response response)
-                    throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
+            {
                 final String body = response.body().string();
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    try {
+                if (getActivity() == null)
+                {
+                    return;
+                }
+                getActivity().runOnUiThread(() ->
+                {
+                    try
+                    {
                         JSONObject obj = new JSONObject(body);
-                        if (obj.getBoolean("success")) {
-                            JSONArray donations =
-                                    obj.getJSONArray("donations");
-                            allRequests.clear();
+                        if (obj.getBoolean("success"))
+                        {
+                            JSONArray donations = obj.getJSONArray("donations");
+                            allRequests.clear(); // so that there are no requests of the same
 
-                            for (int i = 0; i < donations.length(); i++) {
+                            for (int i = 0; i < donations.length(); i++)
+                            {
                                 JSONObject d = donations.getJSONObject(i);
-                                String itemName    = d.getString("item_name");
-                                String catName     = d.getString("cat_name");
-                                String quantity    = d.getString("quantity");
-                                String requestId   = d.getString("request_id");
-                                String description = d.optString(
-                                        "description", "");
-                                String catId       = d.getString("cat_id");
-                                String itemImage   = d.optString(
-                                        "item_image", "");
+                                String itemName = d.getString("item_name");
+                                String catName = d.getString("cat_name");
+                                String quantity = d.getString("quantity");
+                                String requestId = d.getString("request_id");
+                                String description = d.optString("description", "");
+                                String catId = d.getString("cat_id");
+                                String itemImage = d.optString("item_image", "");
 
-                                allRequests.add(new String[]{
-                                        itemName, catName,
-                                        quantity, requestId,
-                                        description, catId, itemImage
-                                });
+                                allRequests.add(new String[]{ itemName, catName, quantity, requestId, description, catId, itemImage});
                             }
                             adapter.updateData(allRequests);
 
-                        } else {
-                            Toast.makeText(requireContext(),
-                                    "No requests found",
-                                    Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e) {
-                        Toast.makeText(requireContext(),
-                                "Error: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        else
+                        {
+                            Toast.makeText(requireContext(), "No requests found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
 
-    private void setupList() {
+    private void setupList()
+    {
         adapter = new DonationRequestAdapter(requireContext(), allRequests);
-        donationRequestsListView.setAdapter(adapter);
+        donationRequestsListView.setAdapter(adapter); //this displays the requests
 
-        donationRequestsListView.setOnItemClickListener((parent, view,
-                                                         position, id) -> {
+        donationRequestsListView.setOnItemClickListener((parent, view, position, id) -> //finds out when someone taps a request
+        {
             adapter.setSelectedPosition(position);
         });
     }
 
-    private void setupButtons() {
-        addBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(),
-                    AddOrEditDonationActivity.class);
+    private void setupButtons()
+    {
+        addBtn.setOnClickListener(v ->
+        {
+            Intent intent = new Intent(requireContext(), AddOrEditDonationActivity.class);
             intent.putExtra("mode", "add");
             intent.putExtra("recipient_id", recipientId);
             startActivity(intent);
         });
 
-        editBtn.setOnClickListener(v -> {
-            if (adapter.getSelectedItem() == null) {
-                Toast.makeText(requireContext(),
-                        "Please select an item to edit",
-                        Toast.LENGTH_SHORT).show();
+        editBtn.setOnClickListener(v ->
+        {
+            if (adapter.getSelectedItem() == null) // error shows if no items selected
+            {
+                Toast.makeText(requireContext(), "Please select an item to edit", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String[] selected = adapter.getSelectedItem();
-            Intent intent = new Intent(requireContext(),
-                    AddOrEditDonationActivity.class);
+            String[] selected = adapter.getSelectedItem(); // this gets slected donation requests
+            Intent intent = new Intent(requireContext(), AddOrEditDonationActivity.class); // this allows fields to prefill
             intent.putExtra("mode", "edit");
             intent.putExtra("itemName", selected[0]);
             intent.putExtra("quantity", selected[2]);
@@ -174,73 +166,68 @@ public class RecipientDashboardFragment extends Fragment {
             startActivity(intent);
         });
 
-        removeBtn.setOnClickListener(v -> {
-            if (adapter.getSelectedItem() == null) {
-                Toast.makeText(requireContext(),
-                        "Please select an item to remove",
-                        Toast.LENGTH_SHORT).show();
+        removeBtn.setOnClickListener(v ->
+        {
+            if (adapter.getSelectedItem() == null)
+            {
+                Toast.makeText(requireContext(), "Please select an item to remove", Toast.LENGTH_SHORT).show();
                 return;
             }
             String itemName  = adapter.getSelectedItem()[0];
             String requestId = adapter.getSelectedItem()[3];
 
-            new AlertDialog.Builder(requireContext())
+            new AlertDialog.Builder(requireContext()) // shows a pop-up to confirm the reqst has been removed
                     .setTitle("Remove Request")
-                    .setMessage("Are you sure you want to remove \""
-                            + itemName + "\"? This cannot be undone.")
-                    .setPositiveButton("Remove", (dialog, which) ->
-                            deleteRequest(requestId, itemName))
-                    .setNegativeButton("Cancel", null)
-                    .show();
+                    .setMessage("Are you sure you want to remove \"" + itemName + "\"? This cannot be undone.")
+                    .setPositiveButton("Remove", (dialog, which) -> deleteRequest(requestId, itemName))
+                    .setNegativeButton("Cancel", null).show();
         });
     }
 
-    private void deleteRequest(String requestId, String itemName) {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("request_id", requestId)
-                .add("recipient_id", String.valueOf(recipientId))
-                .build();
+    private void deleteRequest(String requestId, String itemName)
+    {
+        RequestBody requestBody = new FormBody.Builder().add("request_id", requestId).add("recipient_id", String.valueOf(recipientId)).build(); //this sends reqst and recip id to php
 
-        Request request = new Request.Builder()
-                .url(baseUrl + "delete_request.php")
-                .post(requestBody)
-                .build();
+        Request request = new Request.Builder().url(baseUrl + "delete_request.php").post(requestBody).build();
 
-        client.newCall(request).enqueue(new Callback() {
+        client.newCall(request).enqueue(new Callback()
+        {
             @Override
-            public void onFailure(@NonNull Call call,
-                                  @NonNull IOException e) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(),
-                                "Failed to delete",
-                                Toast.LENGTH_SHORT).show()
-                );
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (getActivity() == null)
+                {
+                    return;
+                }
+
+                getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Failed to delete", Toast.LENGTH_SHORT).show()); //pop-up that it did not work
             }
 
             @Override
-            public void onResponse(@NonNull Call call,
-                                   @NonNull Response response)
-                    throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response)
+                    throws IOException
+            {
                 final String body = response.body().string();
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    try {
+                if (getActivity() == null)
+                {
+                    return;
+                }
+                getActivity().runOnUiThread(() ->
+                {
+                    try //if the delete worked
+                    {
                         JSONObject obj = new JSONObject(body);
-                        if (obj.getBoolean("success")) {
-                            Toast.makeText(requireContext(),
-                                    "Removed: " + itemName,
-                                    Toast.LENGTH_SHORT).show();
-                            fetchDonationRequests();
-                        } else {
-                            Toast.makeText(requireContext(),
-                                    "Failed: " + obj.getString("message"),
-                                    Toast.LENGTH_SHORT).show();
+                        if (obj.getBoolean("success"))
+                        {
+                            Toast.makeText(requireContext(), "Removed: " + itemName, Toast.LENGTH_SHORT).show();fetchDonationRequests(); //pop-up
                         }
-                    } catch (Exception e) {
-                        Toast.makeText(requireContext(),
-                                "Error: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        else
+                        {
+                            Toast.makeText(requireContext(), "Failed: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -248,7 +235,8 @@ public class RecipientDashboardFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
+    public void onResume() // this runs when frag is visible
+    {
         super.onResume();
         fetchDonationRequests();
     }
