@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/login_background">
 
-    <!-- Fragment container -->
     <FrameLayout
         android:id="@+id/recipientFragmentContainer"
         android:layout_width="match_parent"
@@ -17,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/recipientBottomNav"
         android:layout_width="match_parent"
