@@ -32,8 +32,7 @@ import okhttp3.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    EditText recipientNameEt, descriptionEt, phoneEt,
-            cityEt, websiteEt, addressEt;
+    EditText recipientNameEt, descriptionEt, phoneEt, cityEt, websiteEt, addressEt;
     ImageView profileImageView;
     Button changeImageBtn, saveProfileBtn;
     Uri selectedImageUri = null;
@@ -43,12 +42,10 @@ public class EditProfileActivity extends AppCompatActivity {
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
     int recipientId;
 
-    ActivityResultLauncher<Intent> imagePickerLauncher =
-            registerForActivityResult(
+    ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (result.getResultCode() == RESULT_OK
-                                && result.getData() != null) {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             selectedImageUri = result.getData().getData();
                             profileImageView.setImageURI(selectedImageUri);
                         }
@@ -59,6 +56,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        //Variables to objects
         recipientNameEt  = findViewById(R.id.recipientNameEt);
         descriptionEt    = findViewById(R.id.descriptionEt);
         phoneEt          = findViewById(R.id.phoneEt);
@@ -69,8 +67,8 @@ public class EditProfileActivity extends AppCompatActivity {
         changeImageBtn   = findViewById(R.id.changeImageBtn);
         saveProfileBtn   = findViewById(R.id.saveProfileBtn);
 
-        SharedPreferences prefs = getSharedPreferences(
-                "SupplyDropPrefs", MODE_PRIVATE);
+        //Getting the info of the user from the local storage
+        SharedPreferences prefs = getSharedPreferences("SupplyDropPrefs", MODE_PRIVATE);
         recipientId = prefs.getInt("recipient_id", -1);
 
         loadExistingProfile();
@@ -152,14 +150,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void setupSaveButton() {
         saveProfileBtn.setOnClickListener(v -> {
-            String name        = recipientNameEt.getText()
-                    .toString().trim();
-            String description = descriptionEt.getText()
-                    .toString().trim();
-            String phone       = phoneEt.getText().toString().trim();
-            String city       = cityEt.getText().toString().trim();
-            String website     = websiteEt.getText().toString().trim();
-            String address     = addressEt.getText().toString().trim();
+            String name = recipientNameEt.getText().toString().trim();
+            String description = descriptionEt.getText().toString().trim();
+            String phone = phoneEt.getText().toString().trim();
+            String city = cityEt.getText().toString().trim();
+            String website = websiteEt.getText().toString().trim();
+            String address = addressEt.getText().toString().trim();
 
             if (name.isEmpty()) {
                 recipientNameEt.setError("Please enter a name");
