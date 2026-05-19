@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/login_background">
 
-    <!-- SUPPLY DROP Title -->
     <TextView
         android:id="@+id/appTitleLbl"
         android:layout_width="match_parent"
@@ -24,7 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Subtitle -->
     <TextView
         android:id="@+id/subTitleLbl"
         android:layout_width="match_parent"
@@ -40,7 +38,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Divider -->
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -50,7 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Scrollable form -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -65,7 +61,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Recipient Name -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +83,6 @@
                 android:textColorHint="#88ffffff"
                 android:fontFamily="@font/luckiest_guy"/>
 
-            <!-- Image + Description side by side like profile page -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,7 +90,6 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp">
 
-                <!-- Left: Image + Choose button -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -133,7 +126,6 @@
 
                 </LinearLayout>
 
-                <!-- Right: Description -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -168,7 +160,6 @@
 
             </LinearLayout>
 
-            <!-- Phone -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -193,7 +184,6 @@
                 android:textColorHint="#88ffffff" />
 
 
-            <!-- Website -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -217,7 +207,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="#88ffffff" />
 
-            <!-- Address -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -241,7 +230,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="#88ffffff" />
 
-            <!-- city -->
 
             <TextView
                 android:layout_width="match_parent"
@@ -267,7 +255,6 @@
                 android:textColorHint="#88ffffff" />
 
 
-            <!-- Save Button -->
             <Button
                 android:id="@+id/saveProfileBtn"
                 android:layout_width="match_parent"
