@@ -34,6 +34,7 @@ public class RecipientAccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.activity_recipient_account,container, false);
+        // this will connect to the XML to this
 
         LinearLayout editProfileRow = view.findViewById(R.id.editProfileRow);
         LinearLayout logoutRow = view.findViewById(R.id.logoutRow);
@@ -43,25 +44,26 @@ public class RecipientAccountFragment extends Fragment {
         {
             Intent intent = new Intent(requireContext(), EditProfileActivity.class);
             startActivity(intent);
+            // this basically opens to a new screen(the edit profile screen)
         });
 
         logoutRow.setOnClickListener(v ->
         {
             Intent intent = new Intent(requireContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            startActivity(intent); // takes out the prevous screens from memory
         });
 
         deleteAccountRow.setOnClickListener(v ->
         {
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Account")
+            new AlertDialog.Builder(requireContext()).setTitle("Delete Account")
                     .setMessage("Are you sure you want to delete your account? This cannot be undone.")
                     .setPositiveButton("Delete", (dialog, which) ->
                     {
                         deleteAccount();
                     })
                     .setNegativeButton("Cancel", null).show();
+            //this is the pop-up incase someone clicks delete by mistake
         });
 
         return view;
@@ -72,20 +74,20 @@ public class RecipientAccountFragment extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE);
         int recipientId = prefs.getInt("recipient_id", -1);
 
-        if (recipientId == -1)
+        if (recipientId == -1) // if ID is not there default is -1, that is why i did that
         {
             Toast.makeText(requireContext(), "Error: recipient not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RequestBody requestBody = new FormBody.Builder().add("recipient_id", String.valueOf(recipientId)).build();
+        RequestBody requestBody = new FormBody.Builder().add("recipient_id", String.valueOf(recipientId)).build(); //sends recip to PHP
 
-        Request request = new Request.Builder().url(baseUrl + "delete_recipient_account.php").post(requestBody).build();
+        Request request = new Request.Builder().url(baseUrl + "delete_recipient_account.php").post(requestBody).build(); // PHP requestto delete_recip_acc PHP file
 
         client.newCall(request).enqueue(new Callback()
         {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e)
+            public void onFailure(@NonNull Call call, @NonNull IOException e) //if no internet
             {
                 if (getActivity() == null)
                 {
@@ -95,9 +97,7 @@ public class RecipientAccountFragment extends Fragment {
             }
 
             @Override
-            public void onResponse(@NonNull Call call,
-                                   @NonNull Response response)
-                    throws IOException
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
                 final String body = response.body().string();
                 if (getActivity() == null)
@@ -112,10 +112,10 @@ public class RecipientAccountFragment extends Fragment {
                         if (obj.getBoolean("success"))
                         {
                             requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
-
+                           //deletes the saved session so they are logged out
                             Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_SHORT).show();Intent intent = new Intent(requireContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
+                            startActivity(intent); // takes them back login
                         }
                         else
                         {
