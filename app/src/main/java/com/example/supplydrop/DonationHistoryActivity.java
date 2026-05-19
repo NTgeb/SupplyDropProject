@@ -34,7 +34,7 @@ public class DonationHistoryActivity extends AppCompatActivity {
     OkHttpClient client = new OkHttpClient();
     String baseUrl = "https://wmc.ms.wits.ac.za/students/sgroup2711/";
 
-    // Store request_id and recipient_id for row click navigation
+    // Store request_id and recipient_id for row click
     List<String[]> donationMeta = new ArrayList<>();
 
     int donorId;
@@ -44,9 +44,9 @@ public class DonationHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donation_history);
 
-        donationHistoryListView = findViewById(R.id.donationHistoryListView);
+        donationHistoryListView = findViewById(R.id.donationHistoryListView);//Find the List view obj
 
-        // Get donor_id from SharedPreferences
+        //Get donor_id from local storage
         SharedPreferences prefs = getSharedPreferences(
                 "SupplyDropPrefs", MODE_PRIVATE);
         donorId = prefs.getInt("donor_id", -1);
@@ -60,7 +60,7 @@ public class DonationHistoryActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url(baseUrl + "get_donor_history.php")
+                .url(baseUrl + "get_donor_history.php")// The donation history php
                 .post(requestBody)
                 .build();
 
@@ -68,9 +68,7 @@ public class DonationHistoryActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(DonationHistoryActivity.this,
-                                "Failed to load history",
-                                Toast.LENGTH_SHORT).show()
+                        Toast.makeText(DonationHistoryActivity.this, "Failed to load history", Toast.LENGTH_SHORT).show()
                 );
             }
 
@@ -83,10 +81,11 @@ public class DonationHistoryActivity extends AppCompatActivity {
                         JSONObject obj = new JSONObject(body);
                         if (obj.getBoolean("success")) {
                             JSONArray donations = obj.getJSONArray("donations");
+                            //Clear any previous lists
                             allDonations.clear();
                             donationMeta.clear();
 
-                            for (int i = 0; i < donations.length(); i++) {
+                            for (int i = 0; i < donations.length(); i++) {//Populate our JSON Objects
                                 JSONObject d = donations.getJSONObject(i);
                                 String orgName    = d.getString("full_name");
                                 String itemName   = d.getString("item_name");
@@ -94,12 +93,12 @@ public class DonationHistoryActivity extends AppCompatActivity {
                                 String requestId  = d.getString("request_id");
                                 String recipientId = d.getString("recipient_id");
 
-                                // For display in table
+                                //Add to the lists for table
                                 allDonations.add(new String[]{
                                         orgName, itemName, qty
                                 });
 
-                                // For navigation on row click
+                                //Add to the list for row clicks
                                 donationMeta.add(new String[]{
                                         requestId, recipientId, orgName
                                 });
@@ -108,14 +107,10 @@ public class DonationHistoryActivity extends AppCompatActivity {
                             setupList();
 
                         } else {
-                            Toast.makeText(DonationHistoryActivity.this,
-                                    "No donation history found",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DonationHistoryActivity.this,"No donation history found",Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
-                        Toast.makeText(DonationHistoryActivity.this,
-                                "Error: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DonationHistoryActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -123,14 +118,15 @@ public class DonationHistoryActivity extends AppCompatActivity {
     }
 
     private void setupList() {
+        //Add our populated list to the adapted
         adapter = new DonationHistoryAdapter(this, allDonations);
         donationHistoryListView.setAdapter(adapter);
 
-        // Click row → go to that specific donation request
+        //Go to specific donation when clicking on a row
         donationHistoryListView.setOnItemClickListener((parent, view,
                                                         position, id) -> {
-            String[] meta = donationMeta.get(position);
-            Intent intent = new Intent(this, SingleRecipientActivity.class);
+            String[] meta = donationMeta.get(position);//Find the info on them
+            Intent intent = new Intent(this, SingleRecipientActivity.class);//Calling the activity to display the info
             intent.putExtra("request_id", meta[0]);
             intent.putExtra("recipient_id", meta[1]);
             intent.putExtra("recipient_name", meta[2]);
