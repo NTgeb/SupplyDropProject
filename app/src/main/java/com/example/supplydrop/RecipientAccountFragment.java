@@ -41,16 +41,14 @@ public class RecipientAccountFragment extends Fragment {
 
         editProfileRow.setOnClickListener(v ->
         {
-            Intent intent = new Intent(requireContext(),
-                    EditProfileActivity.class);
+            Intent intent = new Intent(requireContext(), EditProfileActivity.class);
             startActivity(intent);
         });
 
         logoutRow.setOnClickListener(v ->
         {
             Intent intent = new Intent(requireContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 
@@ -63,8 +61,7 @@ public class RecipientAccountFragment extends Fragment {
                     {
                         deleteAccount();
                     })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+                    .setNegativeButton("Cancel", null).show();
         });
 
         return view;
@@ -77,9 +74,7 @@ public class RecipientAccountFragment extends Fragment {
 
         if (recipientId == -1)
         {
-            Toast.makeText(requireContext(),
-                    "Error: recipient not found",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Error: recipient not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -102,36 +97,34 @@ public class RecipientAccountFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call call,
                                    @NonNull Response response)
-                    throws IOException {
+                    throws IOException
+            {
                 final String body = response.body().string();
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    try {
+                if (getActivity() == null)
+                {
+                    return;
+                }
+                getActivity().runOnUiThread(() ->
+                {
+                    try
+                    {
                         JSONObject obj = new JSONObject(body);
-                        if (obj.getBoolean("success")) {
-                            requireContext().getSharedPreferences(
-                                            "SupplyDropPrefs",
-                                            android.content.Context.MODE_PRIVATE)
-                                    .edit().clear().apply();
+                        if (obj.getBoolean("success"))
+                        {
+                            requireContext().getSharedPreferences("SupplyDropPrefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
 
-                            Toast.makeText(requireContext(),
-                                    "Account deleted",
-                                    Toast.LENGTH_SHORT).show();
-
-                            Intent intent = new Intent(requireContext(),
-                                    MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_SHORT).show();Intent intent = new Intent(requireContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
-                        } else {
-                            Toast.makeText(requireContext(),
-                                    obj.getString("message"),
-                                    Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e) {
-                        Toast.makeText(requireContext(),
-                                "Error: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        else
+                        {
+                            Toast.makeText(requireContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
