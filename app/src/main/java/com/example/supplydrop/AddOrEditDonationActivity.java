@@ -89,7 +89,7 @@ public class AddOrEditDonationActivity extends AppCompatActivity {
         itemImageView = findViewById(R.id.itemImageView);
 
         recipientId = getIntent().getIntExtra("recipient_id", -1); //reads stuff from the prev screen
-        requestId   = getIntent().getIntExtra("request_id", -1);
+        requestId = getIntent().getIntExtra("request_id", -1);
 
         setupCategorySpinner();
         setupQuantityButtons();
